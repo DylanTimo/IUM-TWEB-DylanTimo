@@ -24,10 +24,10 @@ public class AnimeService {
      */
     public Anime getById(Integer id){ // forse ByMal_id
         if(id == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID mancante - getById");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing - getById");
 
         return this.animeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime non trovato"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found - getById"));
     }
 
     /**
@@ -41,4 +41,10 @@ public class AnimeService {
 
         return this.animeRepository.findByTitle(title);
     }
+
+    /**
+     *
+     * @return all anime
+     */
+    public List<Anime> findAll(){ return this.animeRepository.findAll(); }
 }
