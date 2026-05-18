@@ -1,0 +1,190 @@
+openapi: 3.0.0
+
+info:
+  title: Anime Ratings API
+  version: 1.0.0
+  description: API microservices of anime data
+
+servers:
+  - url: http://localhost:3001
+    description: Local server of the microservices connected do mongodb server
+
+paths:
+  /anime/{id}/ratings:
+    get:
+      summary: Returns all ratings of a particular anime
+      description: >
+        Returns a list of every votes given by the users to an anime identified by its id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Anime ID
+      responses:
+        200:
+          description: List of ratings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRating'
+              examples:
+                esempio:
+                  value:
+                    - userId: 123
+                      animeId: 30276
+                      rating: 8
+                      created_at: "2024-01-01"
+                    - userId: 456
+                      animeId: 30276
+                      rating: 9
+                      created_at: "2024-01-02"
+
+        404:
+          description: No ratings found
+
+        500:
+          description: Internal server error
+
+  /user/{username}/ratings:
+    get:
+      summary: Get all ratings submitted by a specific user
+      description: Returns all anime ratings created by the user identified by the given username.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Username of the user
+      responses:
+        200:
+          description: List of ratings submitted by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRating'
+        404:
+          description: No ratings found for this user
+        500:
+          description: Internal server error
+
+  /user/{username}/profile:
+    get:
+      summary: Get the profile of a specific user
+      description: Returns the profile information of the user identified by the given username.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Username of the user
+      responses:
+        200:
+          description: User profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        404:
+          description: User profile not found
+        500:
+          description: Internal server error
+
+  /user/{username}/favs:
+    get:
+      summary: Get the favorite anime list of a specific user
+      description: Returns the list of favorite anime for the user identified by the given username.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Username of the user
+      responses:
+        200:
+          description: List of favorite anime
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserFav'
+        404:
+          description: No favorites found for this user
+        500:
+          description: Internal server error
+
+
+components:
+  schemas:
+    UserRating:
+      type: object
+      properties:
+        userId:
+          type: integer
+          example: 123
+        animeId:
+          type: integer
+          example: 30276
+        rating:
+          type: number
+          example: 8
+        created_at:
+          type: string
+          example: "2024-01-01"
+
+    UserProfile:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Store97"
+        gender:
+          type: string
+          example: "Male"
+        birthday:
+          type: string
+          example: "1997-10-21"
+        location:
+          type: string
+          example: "Italy"
+        joined:
+          type: string
+          example: "2020-05-12"
+        watching:
+          type: integer
+          example: 13
+        completed:
+          type: integer
+          example: 55
+        on_hold:
+          type: integer
+          example: 5
+        dropped:
+          type: integer
+          example: 19
+        plan_to_watch:
+          type: integer
+          example: 27
+
+    UserFav:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Lock97"
+        fav_type:
+          type: string
+          example: "Anime"
+        id:
+          type: integer
+          example: 32524
+
