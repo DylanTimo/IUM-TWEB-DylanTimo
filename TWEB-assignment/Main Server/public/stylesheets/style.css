@@ -1,0 +1,164 @@
+
+a {
+  color: #00B7FF;
+}
+
+body {
+
+}
+
+.show{
+  display: block;
+}
+.hide{
+  display: none;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 20px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-left,
+.nav-center,
+.nav-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-left {
+  justify-content: flex-start;
+}
+
+.nav-center {
+  justify-content: center;
+}
+
+.nav-right {
+  justify-content: flex-end;
+}
+
+
+
+#divLogin{
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#row{
+  display: flex;
+  flex-direction: row;
+}
+
+
+/* Hamburger-MenuOffCanvas */
+#btnHamburger{
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2000;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px;            /* hidden outside */
+  width: 250px;
+  height: 100vh;
+  background: #222;
+  color: white;
+  padding: 20px;
+  transition: left 0.3s ease;  /* animation */
+  z-index: 1950;
+}
+
+.side-menu.open {
+  left: 0;
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.side-menu li {
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+/* Catalog */
+.catalog_container{
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+}
+
+.catalog{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid gray;
+}
+
+/* Anime_card*/
+.anime_card{
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  max-height: 260px;
+  cursor: pointer;
+
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+}
+
+.anime_card_img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.anime_card_details {
+  margin-top: 10px;
+}
+
+.anime_card.open {
+  max-height: 600px;                /* altezza card aperta */
+}
+
+/* Overlay */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  z-index: 1900;
+}
+
+#overlay.show {
+  display: block;
+}
+
+/* Main div container */
+#divBackground{
+  width: 100%;
+  background-image: url("https://wallpapercave.com/wp/wp4712646.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

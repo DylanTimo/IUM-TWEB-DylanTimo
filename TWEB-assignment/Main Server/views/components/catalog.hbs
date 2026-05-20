@@ -1,0 +1,20 @@
+<div class = "catalog_container">
+    <span>Catalog</span>
+    <div id = "mainCatalog" class = "catalog">
+
+    </div>
+</div>
+
+<script id="anime_card_template" type="text/x-handlebars-template">
+    <div class = "anime_card" onclick="toggleCard(this)">
+    <a href = "" title = "\{{title}}">
+        <img src = "" alt = "\{{title}}" class = "anime_card_img">
+    </a>
+    <div class = "anime_card_overlay">\{{title}}</div>
+    <div class = "anime_card_details">
+        <p>episodes: "\{{episodes}}"</p>
+        <p>Dropped: </p>
+        <p>Planned to watch: </p>
+    </div>
+</div>
+</script>

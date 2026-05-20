@@ -45,6 +45,9 @@ public class Anime {
     @Column(name = "episodes")
     private Integer episodes;
 
+    @Column(name = "year")
+    private Integer year;
+
     @Column(name = "producers", columnDefinition = "TEXT")
     private String producers;
 
@@ -107,6 +110,9 @@ public class Anime {
 
     public Integer getEpisodes(){ return this.episodes; }
     public void setEpisodes(Integer episodes){ this.episodes = episodes; }
+
+    public Integer getYear(){ return this.year; }
+    public void setYear(Integer year){ this.year = year; }
 
     public String getProducers(){ return this.producers; }
     public void setProducers(String producers){ this.producers = producers; }

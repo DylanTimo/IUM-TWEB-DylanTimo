@@ -27,12 +27,20 @@ public class AnimeController {
             @ApiResponse(responseCode = "400", description = "ID missing - getById"),
             @ApiResponse(responseCode = "404", description = "Anime not found - getById")
     })
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Anime getAnimeById(@PathVariable Integer id){
         return animeService.getById(id);
     }
 
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/all")
     public List<Anime> getAll(){ return animeService.findAll(); }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/top")
+    public List<Anime> getTopByYear(@RequestParam Integer year,
+                                    @RequestParam Integer max){
+        return animeService.getTopByYear(year, max);
+    }
 }

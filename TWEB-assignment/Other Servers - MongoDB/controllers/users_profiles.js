@@ -5,7 +5,7 @@ export async function query(req, res) {
     try {
         const { username } = req.params;
         const ratings = await users_profiles_service.query({ username });
-        res.json(ratings);
+        res.json(ratings[0]);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Errore interno nel microservizio Mongo" });

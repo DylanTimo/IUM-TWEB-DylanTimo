@@ -5,6 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+
 import java.util.List;
 
 @Service
@@ -47,4 +55,12 @@ public class AnimeService {
      * @return all anime
      */
     public List<Anime> findAll(){ return this.animeRepository.findAll(); }
+
+    public List<Anime> getTopByYear(Integer year, int max){
+        if(max < 1 || year == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getRecent");
+
+        Pageable limit = PageRequest.of(0, max);
+        return this.animeRepository.findTopByYear(year, limit);
+    }
 }
