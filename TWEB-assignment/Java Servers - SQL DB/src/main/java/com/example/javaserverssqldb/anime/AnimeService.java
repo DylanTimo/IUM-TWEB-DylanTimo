@@ -56,11 +56,26 @@ public class AnimeService {
      */
     public List<Anime> findAll(){ return this.animeRepository.findAll(); }
 
-    public List<Anime> getTopByYear(Integer year, int max){
-        if(max < 1 || year == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getRecent");
+    public List<Anime> getTopByYear(Pageable pageable, Integer year){
+        if(pageable.getPageSize() < 1 || year == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopByYear");
 
-        Pageable limit = PageRequest.of(0, max);
-        return this.animeRepository.findTopByYear(year, limit);
+        return this.animeRepository.findTopByYear(pageable, year);
     }
+
+    public List<Anime> getTopGlobal(Pageable pageable){
+        if(pageable.getPageSize() < 1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopGlobal");
+
+        return this.animeRepository.findTopGlobal(pageable);
+    }
+
+    public List<Anime> getRecent(Pageable pageable){
+        if(pageable.getPageSize() < 1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopGlobal");
+
+        return this.animeRepository.findRecent(pageable);
+    }
+
+
 }

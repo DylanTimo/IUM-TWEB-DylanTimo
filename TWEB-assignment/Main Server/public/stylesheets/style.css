@@ -1,19 +1,4 @@
 
-a {
-  color: #00B7FF;
-}
-
-body {
-
-}
-
-.show{
-  display: block;
-}
-.hide{
-  display: none;
-}
-
 .navbar {
   display: flex;
   align-items: center;
@@ -95,48 +80,63 @@ body {
 
 /* Catalog */
 .catalog_container{
-  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr 6fr 1fr;
   margin: 0 auto;
-  min-height: calc(100vh - 80px);
+
+  min-height: 500px;
+  max-width: 1200px;
 }
 
 .catalog{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  row-gap: 5px;
+  column-gap: 10px;
+
   background-color: rgba(255, 255, 255, 0.5);
   border: 1px solid gray;
+
+  align-content: start; /* Evita stretching delle animeCrads*/
 }
+#mainLeftSide{}
+#mainRightSide{}
+#mainCatalog{}
+
 
 /* Anime_card*/
 .anime_card{
-  background: white;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
-  max-height: 260px;
+
+  padding: 10px;
   cursor: pointer;
+
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  min-height: 80px;
+  max-height: 80px;
+  max-width: 250px;
 
   transition: max-height 0.3s ease;
   overflow: hidden;
-}
 
-.anime_card_img {
-  width: 100%;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-
-.anime_card_details {
-  margin-top: 10px;
+  align-self: start; /* si sitemano subito senza stretcharsi*/
 }
 
 .anime_card.open {
-  max-height: 600px;                /* altezza card aperta */
+  grid-column: 1 / -1;             /* espande su tutta la row */
+  max-height: 600px;
+  max-width: none;
 }
+
+.anime_card p{
+  margin: 2px 0;
+  line-height: 1.2;
+}
+
 
 /* Overlay */
 #overlay {
@@ -161,4 +161,27 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  min-height: 100vh;
+}
+
+
+
+a {
+  color: #00B7FF;
+}
+
+p{
+  padding: 1px;
+}
+
+body {
+
+}
+
+.show{
+  display: block;
+}
+.hidden{
+  display: none;
 }

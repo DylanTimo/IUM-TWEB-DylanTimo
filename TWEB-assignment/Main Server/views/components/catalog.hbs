@@ -1,20 +1,33 @@
 <div class = "catalog_container">
-    <span>Catalog</span>
-    <div id = "mainCatalog" class = "catalog">
-
-    </div>
+    <div id = "mainLeftSide"></div>
+    <div id = "mainCatalog" class = "catalog"></div>
+    <div id = "mainRightSide"></div>
+    <button></button>
+    <button id = "btnLoadMore">boh</button>
 </div>
 
 <script id="anime_card_template" type="text/x-handlebars-template">
-    <div class = "anime_card" onclick="toggleCard(this)">
-    <a href = "" title = "\{{title}}">
-        <img src = "" alt = "\{{title}}" class = "anime_card_img">
-    </a>
-    <div class = "anime_card_overlay">\{{title}}</div>
-    <div class = "anime_card_details">
-        <p>episodes: "\{{episodes}}"</p>
-        <p>Dropped: </p>
-        <p>Planned to watch: </p>
+    <div class = "anime_card">
+        <a  title = "\{{title}}">
+            <img src = "" alt = "\{{title}}" class = "anime_card_img">
+        </a>
+        <div class = "anime_card_overlay">\{{title}}</div>
+        <div class = "anime_card_details hidden">
+        <p><br><br></p>
+        <p>Rank: \{{rank}}</p>
+        <p>Year: \{{year}}</p>
+        <p>Genres: \{{genres}}</p>
+        <p>Themes: \{{themes}}</p>
+        <p>Score: \{{score}}</p>
+        <p>Total Users: \{{total_users}}</p>
+        <p>Episodes: \{{episodes}}</p>
+        <p>Producers: \{{producers}}</p>
+        <p>Source: \{{source}}</p>
+        <p>Type: \{{type}}</p>
+        <p>Status: \{{status}}</p>
+        <p>Favourites: \{{favorites}}</p>
+        <p>Dropped: \{{dropped}}</p>
+        <p>Planned to watch: \{{plan_to_watch}}</p>
+        </div>
     </div>
-</div>
 </script>
