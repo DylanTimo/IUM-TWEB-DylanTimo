@@ -1,2 +1,3 @@
-data/cleaned/*
-data/raw/*
+HCI-assignment/solution/data/cleaned/*
+HCI-assignment/solution/data/raw/*
+notebooks/boh.ipynb
