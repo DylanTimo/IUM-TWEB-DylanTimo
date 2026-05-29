@@ -6,11 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 
 import java.util.List;
@@ -30,7 +25,7 @@ public class AnimeService {
      * @param id anime to find
      * @return anime data
      */
-    public Anime getById(Integer id){ // forse ByMal_id
+    public Anime getById(Integer id){
         if(id == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing - getById");
 
@@ -47,14 +42,14 @@ public class AnimeService {
         if(title == null || title.isBlank())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "title non valido - getByTitle");
 
-        return this.animeRepository.findByTitle(title);
+        return this.animeRepository.findByTitleContainingIgnoreCase(title);
     }
 
     /**
-     *
+     * Get all anime
      * @return all anime
      */
-    public List<Anime> findAll(){ return this.animeRepository.findAll(); }
+    public List<Anime> getAll(){ return this.animeRepository.findAll(); }
 
     public List<Anime> getTopByYear(Pageable pageable, Integer year){
         if(pageable.getPageSize() < 1 || year == null)
@@ -63,6 +58,11 @@ public class AnimeService {
         return this.animeRepository.findTopByYear(pageable, year);
     }
 
+    /**
+     * Get top anime by year
+     * @param pageable pageable object with search parameters
+     * @return List of anime, sorted by score
+     */
     public List<Anime> getTopGlobal(Pageable pageable){
         if(pageable.getPageSize() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopGlobal");
@@ -70,6 +70,11 @@ public class AnimeService {
         return this.animeRepository.findTopGlobal(pageable);
     }
 
+    /**
+     * Get recent anime, calculated by year
+     * @param pageable pageable object with search parameters
+     * @return List of anime, sorted by year
+     */
     public List<Anime> getRecent(Pageable pageable){
         if(pageable.getPageSize() < 1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopGlobal");

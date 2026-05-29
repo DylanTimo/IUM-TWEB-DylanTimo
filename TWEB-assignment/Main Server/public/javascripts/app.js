@@ -97,18 +97,27 @@
     loadRecentAnime();
   });
 
-  async function loadCategory(type) {
-    resultsContainer.innerHTML = "<p>Loading...</p>";
-
-  //  const res = await fetch(`/api/category?type=${type}`); // to change
-  //  const res = await axios.get(`http://localhost:8081/user/${username}/profile`);
-
-    const data = await res.json();
-
-    renderResults(data.results);
-  }
 // Anime Cards Features
 
+// Search Bar Features
+
+  const btnAnimeSearch = document.getElementById("btnAnimeSearch");
+
+  btnAnimeSearch.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    loadAnimeByTitle();
+  })
+
+  const btnResetSearch = document.getElementById("btnResetSearch");
+  const inputAnimeSearch = document.getElementById("inputAnimeSearch");
+
+  btnResetSearch.addEventListener("click", (e) => {
+    e.preventDefault();
+    inputAnimeSearch.value = "";
+    inputAnimeSearch.placeholder = "Search anime...";
+    loadHome();
+  })
 
 // Overlay
   const overlay = document.getElementById("overlay");
@@ -127,12 +136,10 @@
 
     // 1) Click On A Card
     if (card) {
-      const details = card.querySelector(".anime_card_details");
 
       // Clicked On The Same Card → Toggle
       if (card === currentlyOpenCard) {
-        card.classList.toggle("open");
-        details.classList.toggle("hidden");
+        toggleCard(card);
         if (!card.classList.contains("open")) {
           currentlyOpenCard = null;
         }
@@ -141,23 +148,20 @@
 
       // Card Already Opened -> Close It
       if (currentlyOpenCard) {
-        const oldDetails = currentlyOpenCard.querySelector(".anime_card_details");
-        currentlyOpenCard.classList.remove("open");
-        oldDetails.classList.add("hidden");
+        toggleCard(currentlyOpenCard);
       }
 
       // Open New Card
-      card.classList.add("open");
-      details.classList.remove("hidden");
+      toggleCard(card);
       currentlyOpenCard = card;
+      if(card.dataset.statsloaded === "false")
+        loadAnimeStats(card.dataset.id, card);
       return;
     }
 
     // 2) Outside Click → Close Any Opened Card
     if (currentlyOpenCard) {
-      currentlyOpenCard.classList.remove("open");
-      const oldDetails = currentlyOpenCard.querySelector(".anime_card_details");
-      oldDetails.classList.toggle("hidden");
+      toggleCard(currentlyOpenCard);
       currentlyOpenCard = null;
     }
   });
@@ -171,6 +175,13 @@
 
 
 // Functions
+  function toggleCard(card){
+    const details = card.querySelector(".anime_card_details");
+    const stats = card.querySelector(".stats_container");
+    card.classList.toggle("open");
+    details.classList.toggle("open");
+    stats.classList.toggle("open");
+  }
   // Home
   async function loadHome() {
     try {
@@ -178,6 +189,25 @@
       renderCatalog(res);
     } catch (err) {
       console.error("Errore in loadHome:", err);
+    }
+  }
+
+  async function loadAnimeByTitle(){
+    try{
+      const inputAnimeSearch = document.getElementById("inputAnimeSearch");
+      const animeTitle = inputAnimeSearch.value.trim();
+      const res = await queryAnimeByTitle(animeTitle);
+
+      if(res.length === 0){
+        const inputAnimeSearch = document.getElementById("inputAnimeSearch");
+        inputAnimeSearch.value = "";
+        inputAnimeSearch.placeholder = "No Anime Found";
+        return;
+      }
+
+      renderCatalog(res);
+    } catch (err) {
+      console.error("Errore in loadAnimeByTitle:", err);
     }
   }
 
@@ -190,6 +220,7 @@
       console.error("Errore in loadRecentAnime:", err);
     }
   }
+
   //
   async function loadTopGlobal(){
     try{
@@ -199,11 +230,13 @@
       console.error("Errore in loadTopGlobal:", err);
     }
   }
+
   //
   async function closeLeftMenu(){
     menuOffCanvas.classList.toggle("open");
     overlay.classList.toggle("show");
   }
+
   //
   let lastQuery = "";
   let offset = 0;
@@ -220,6 +253,8 @@
       console.error("Errore in loadMore:", err);
     }
   }
+
+  //
   const btnLoadMore = document.getElementById("btnLoadMore");
   btnLoadMore.addEventListener("click", loadMore);
 
@@ -232,6 +267,29 @@
     catalog.appendChild(btn);
   }
 
+  //
+  async function loadAnimeStats(animeId, card){
+    const statsContainer = card.querySelector(".stats_container");
+
+    try{
+      const res = await queryAnimeStats(animeId);
+
+      statsContainer.innerHTML =  `
+            <p>Watching: ${res.watching}</p>
+            <p>Completed: ${res.completed}</p>
+            <p>Users on hold: ${res.on_hold}</p>
+            <p>Planned to watch: ${res.plan_to_watch}</p>
+            <p>Total users: ${res.total}</p>
+            <p>Dropped by: ${res.dropped}</p>
+        `;
+
+      card.dataset.statsLoaded = "true"
+
+    } catch (err) {
+      console.error("Errore in loadAnimeStats:", err);
+    }
+
+  }
 // Query
 
   async function queryTopByYear(year, max) {
@@ -263,6 +321,26 @@
       console.error("Error loading loadTopGlobal anime:", err);
     }
   }
+
+  async function queryAnimeByTitle(animeTitle) {
+    try{
+      const res = await axios.get(`http://localhost:8082/anime/title?title=${animeTitle}`);
+      lastQuery = ``;
+      offset = 0;
+      return res.data;
+    } catch (err) {
+    }
+  }
+
+  async function queryAnimeStats(animeId) {
+    try{
+      const res = await axios.get(`http://localhost:8082/anime/${animeId}/stats`);
+      return res.data;
+    } catch (err) {
+      console.error("Error loading anime stats:", err);
+    }
+  }
+
 
   async function queryMore() {
     try {

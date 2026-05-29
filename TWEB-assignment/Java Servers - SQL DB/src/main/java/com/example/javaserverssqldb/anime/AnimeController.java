@@ -22,6 +22,7 @@ public class AnimeController {
         this.animeService = animeService;
     }
 
+
     @Operation(
             summary = "Get an anime by its id"
     )
@@ -30,8 +31,6 @@ public class AnimeController {
             @ApiResponse(responseCode = "400", description = "ID missing - getById"),
             @ApiResponse(responseCode = "404", description = "Anime not found - getById")
     })
-
-
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Anime getAnimeById(@PathVariable Integer id){
@@ -39,11 +38,38 @@ public class AnimeController {
     }
 
 
+    @Operation(
+            summary = "Get an anime by its title"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "title missing - getAnimeByTitle")
+    })
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/title")
+    public List<Anime> getAnimeByTitle(@RequestParam String title){ // List<Anime>, maybe there are some anime with the same name
+        return animeService.getByTitle(title);
+    }
+
+    @Operation(
+            summary = "Get every anime in the db"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/all")
-    public List<Anime> getAll(){ return animeService.findAll(); }
+    public List<Anime> getAll(){ return animeService.getAll(); }
 
 
+
+    @Operation(
+            summary = "Get top anime, by score"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = " - getTopByYear")
+    })
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/top")
     public List<Anime> getTopByYear(@RequestParam Integer offset,
@@ -58,6 +84,15 @@ public class AnimeController {
             return animeService.getTopByYear(page, year);
     }
 
+
+
+    @Operation(
+            summary = "Get recent anime, calculated by year"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = " - getRecent")
+    })
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/recent")
     public List<Anime> getRecent(@RequestParam Integer offset,
@@ -66,5 +101,7 @@ public class AnimeController {
 
         return animeService.getRecent(page);
     }
+
+
 
 }

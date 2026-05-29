@@ -1,8 +1,14 @@
 
 .navbar {
   display: flex;
-  align-items: center;
+  position: fixed;
+
+  top: 0;
+  left: 0;
   height: 60px;
+  width: 100%;
+
+  align-items: center;
   padding: 0 20px;
   background-color: rgba(255, 255, 255, 0.7);
 }
@@ -21,22 +27,32 @@
 
 .nav-center {
   justify-content: center;
+  min-width: 0;
+  overflow: hidden;
 }
 
+
 .nav-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+#containerLogin{
+  display: flex;
+  flex-direction: row;
+}
+
+#divLogin, #divLoggedIn, #divWaitingLogin{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
   justify-content: flex-end;
 }
 
 
-
-#divLogin{
-  position: absolute;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-
-#row{
+.row{
   display: flex;
   flex-direction: row;
 }
@@ -84,13 +100,15 @@
   grid-template-columns: 1fr 6fr 1fr;
   margin: 0 auto;
 
+  padding-top: 80px;
+
   min-height: 500px;
   max-width: 1200px;
 }
 
 .catalog{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   row-gap: 5px;
   column-gap: 10px;
 
@@ -116,26 +134,72 @@
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 
-  min-height: 80px;
-  max-height: 80px;
+  min-height: 250px;
+  max-height: 250px;
   max-width: 250px;
 
-  transition: max-height 0.3s ease;
+  transition: max-height 0.2s ease, max-width 0.2s ease, opacity 0.5s ease;
   overflow: hidden;
 
   align-self: start; /* si sitemano subito senza stretcharsi*/
 }
 
+.anime_card_details{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease, max-width 0.2s ease, opacity 0.5s ease;
+
+}
+
+.stats_container{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease, max-width 0.2s ease, opacity 0.5s ease;
+}
+
+.anime_card img{
+  width: 100%;
+  height: 100%;
+  max-height: 220px;
+
+  object-fit: cover;
+}
+
 .anime_card.open {
+  display: grid;
+  grid-template-columns: 2fr 6fr 2fr;
+  margin: 0 auto;
+
   grid-column: 1 / -1;             /* espande su tutta la row */
   max-height: 600px;
   max-width: none;
+
+  opacity: 1;
+}
+
+.anime_card_details.open{
+  max-height: 600px;
+  opacity: 1;
+}
+
+.stats_container.open{
+  max-height: 600px;
+  opacity: 1;
+}
+
+.anime_card.open img{
+  width: auto;
+  height: auto;
 }
 
 .anime_card p{
   margin: 2px 0;
   line-height: 1.2;
 }
+
+
 
 
 /* Overlay */
@@ -156,13 +220,16 @@
 
 /* Main div container */
 #divBackground{
+
   width: 100%;
   background-image: url("https://wallpapercave.com/wp/wp4712646.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 
-  min-height: 100vh;
+  min-height: 130vh;
+
+  padding-bottom: 60px;
 }
 
 
@@ -184,4 +251,9 @@ body {
 }
 .hidden{
   display: none;
+}
+
+#app {
+  width: 100%;
+  position: relative;
 }

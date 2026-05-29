@@ -9,11 +9,14 @@ import jakarta.persistence.Table;
 public class Anime {
 
     @Id
-    @Column(name = "mal_id", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "mal_id", nullable = false, columnDefinition = "integer")
     private Integer id;
 
     @Column(name = "title", columnDefinition = "TEXT")
     private String title;
+
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String image_url;
 
     @Column(name = "type", columnDefinition = "TEXT")
     private String type;
@@ -50,17 +53,15 @@ public class Anime {
 
     @Column(name = "producers", columnDefinition = "TEXT")
     private String producers;
-
+/*
     @Column(name = "total_users")
     private Integer total_users;
-
+ */
 
     /**
      * Empty constructor
      */
-    public Anime(){
-
-    }
+    public Anime(){}
 
     /**
      * Simple constructor
@@ -80,6 +81,9 @@ public class Anime {
 
     public String getTitle(){ return this.title; }
     public void setTitle(String title){ this.title = title; }
+
+    public String getImageUrl(){ return this.image_url; }
+    public void setImageUrl(String image_url){ this.image_url = image_url; }
 
     public String getType(){ return this.type; }
     public void setType(String type){ this.type = type; }
@@ -116,8 +120,8 @@ public class Anime {
 
     public String getProducers(){ return this.producers; }
     public void setProducers(String producers){ this.producers = producers; }
-
+/*
     public Integer getTotal_users(){ return this.total_users; }
     public void setTotal_users(Integer total_users){ this.total_users = total_users; }
-
+ */
 }

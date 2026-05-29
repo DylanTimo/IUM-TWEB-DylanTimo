@@ -17,6 +17,8 @@ public interface AnimeRepository extends JpaRepository<Anime, Integer> {
 
     List<Anime> findByTitle(String title);
 
+    List<Anime> findByTitleContainingIgnoreCase(String title);
+
     @Query("SELECT a FROM Anime a WHERE a.year = :year ORDER BY a.score DESC")
     List<Anime> findTopByYear(@Param("year") Pageable pageable, Integer year);
 

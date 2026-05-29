@@ -1,26 +1,26 @@
-<div class = "anime_card">
-    <a href = "" title = "{{title}}">
-        <img src = "" alt = "{{title}}" class = "anime_card_img">
+<div class = "anime_card" data-id = "\{{id}}"
+     data-title = "\{{title}}"
+     data-statsloaded = "false">
+    <a  title = "\{{title}}">
+        <img src = "\{{imageUrl}}" alt = "\{{title}}" class = "anime_card_img">
+        <div class = "anime_card_overlay">\{{title}}</div>
     </a>
-    <h3>{{title}}</h3>
-    <div class = "anime_card_overlay">{{title}}</div>
-    <div class = "anime_card_details">
-        <p><br><br></p>
-        <p>Rank: {{rank}}</p>
-        <p>Year: {{year}}</p>
-        <p>Genres: {{genres}}</p>
-        <p>Themes: {{themes}}</p>
-        <p>Score: {{score}}</p>
-        <p>Total Users: {{total_users}}</p>
-        <p>Episodes: {{episodes}}</p>
-        <p>Producers: {{producers}}</p>
-        <p>Source: {{source}}</p>
-        <p>Type: {{type}}</p>
-        <p>Status: {{status}}</p>
-        <p>Favourites: {{favorites}}</p>
-        <p>Dropped: {{dropped}}</p>
-        <p>Planned to watch: {{plan_to_watch}}</p>
+    <div class = "anime_card_details hidden">
+        <p>Id: \{{id}}</p>
+        <p>Rank: \{{rank}}</p>
+        <p>Year: \{{year}}</p>
+        <p>Genres: \{{genres}}</p>
+        <p>Themes: \{{themes}}</p>
+        <p>Score: \{{score}}</p>
+        <p>Total Users: \{{total_users}}</p>
+        <p>Episodes: \{{episodes}}</p>
+        <p>Producers: \{{producers}}</p>
+        <p>Source: \{{source}}</p>
+        <p>Type: \{{type}}</p>
+        <p>Status: \{{status}}</p>
+        <p>Favourites: \{{favorites}}</p>
     </div>
+
+    <div class = "stats_container hidden">Loading stats...</div>
+
 </div>
-
-
