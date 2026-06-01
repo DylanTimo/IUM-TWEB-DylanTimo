@@ -169,7 +169,7 @@
 
 .anime_card.open {
   display: grid;
-  grid-template-columns: 2fr 6fr 2fr;
+  grid-template-columns: 2fr 6fr;
   margin: 0 auto;
 
   grid-column: 1 / -1;             /* espande su tutta la row */
@@ -199,6 +199,19 @@
   line-height: 1.2;
 }
 
+#anime_card_voices{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 3fr));
+  gap: 1px;
+}
+
+.actor_img {
+  max-width: 27px;
+  max-height: 40px;
+  object-fit: cover;
+  border-radius: 1px;
+  margin-bottom: 2px;
+}
 
 
 

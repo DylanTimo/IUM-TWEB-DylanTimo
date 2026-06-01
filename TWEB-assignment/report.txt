@@ -69,3 +69,14 @@ CREATE TABLE actors_details
 
     PRIMARY KEY (person_mal_id)
 );
+
+CREATE TABLE actors_voice_works(
+id BIGSERIAL PRIMARY KEY,
+person_mal_id integer,
+role TEXT,
+anime_mal_id integer,
+character_mal_id integer,
+language TEXT
+);
+
+--command " "\\copy public.actors_voice_works(person_mal_id, role, animeid, characterid, language) FROM 'C:/Users/dylan/Desktop/HCI-PR~1/HCI-AS~1/solution/data/cleaned/ACTORS~3.CSV' WITH(FORMAT csv, DELIMITER ',', HEADER, QUOTE '\"', ESCAPE '''');""

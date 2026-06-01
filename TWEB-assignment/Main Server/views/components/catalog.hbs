@@ -9,7 +9,8 @@
 <script id="anime_card_template" type="text/x-handlebars-template">
     <div class = "anime_card" data-id = "\{{id}}"
                               data-title = "\{{title}}"
-                              data-statsloaded = "false">
+                              data-statsloaded = "false"
+                              data-voicesloaded = "false">
         <a  title = "\{{title}}">
             <img src = "\{{imageUrl}}" alt = "\{{title}}" class = "anime_card_img">
             <div class = "anime_card_overlay">\{{title}}</div>
@@ -29,7 +30,9 @@
             <p>Favourites: \{{favorites}}</p>
         </div>
 
-        <div class = "stats_container">Loading stats...</div>
+        <div id = "anime_card_stats" class = "anime_card_details">Loading stats...</div>
+
+        <div id = "anime_card_voices" class = "anime_card_details">Loading voices...</div>
 
     </div>
 </script>

@@ -156,6 +156,9 @@
       currentlyOpenCard = card;
       if(card.dataset.statsloaded === "false")
         loadAnimeStats(card.dataset.id, card);
+      if(card.dataset.voicesloaded === "false")
+        loadAnimeVoices(card.dataset.id, card);
+
       return;
     }
 
@@ -176,11 +179,9 @@
 
 // Functions
   function toggleCard(card){
-    const details = card.querySelector(".anime_card_details");
-    const stats = card.querySelector(".stats_container");
+    const details = card.querySelectorAll(".anime_card_details");
     card.classList.toggle("open");
-    details.classList.toggle("open");
-    stats.classList.toggle("open");
+    details.forEach(detail => detail.classList.toggle("open"));
   }
   // Home
   async function loadHome() {
@@ -269,7 +270,7 @@
 
   //
   async function loadAnimeStats(animeId, card){
-    const statsContainer = card.querySelector(".stats_container");
+    const statsContainer = card.querySelector("#anime_card_stats");
 
     try{
       const res = await queryAnimeStats(animeId);
@@ -288,7 +289,31 @@
     } catch (err) {
       console.error("Errore in loadAnimeStats:", err);
     }
+  }
 
+  async function loadAnimeVoices(animeId, card){
+    const voicesContainer = card.querySelector("#anime_card_voices");
+
+    try{
+      const res = await queryAnimeVoices(animeId);
+      const topActors = res
+        .sort((a, b) => b.favorites - a.favorites)
+        .slice(0, 5);
+
+      voicesContainer.innerHTML =  topActors.map(actor => `
+        <div>
+            <img src="${actor.image_url}" class="actor_img">
+            <p>Name: ${actor.name}</p>
+            <p>Famous in:: ${actor.relevant_location}</p>
+            <p>Favorites: ${actor.favorites}</p>
+        </div>
+        `).join("");
+
+      card.dataset.voicesloaded = "true"
+
+    } catch (err) {
+      console.error("Errore in loadAnimeVoices:", err);
+    }
   }
 // Query
 
@@ -338,6 +363,15 @@
       return res.data;
     } catch (err) {
       console.error("Error loading anime stats:", err);
+    }
+  }
+
+  async function queryAnimeVoices(animeId) {
+    try{
+      const res = await axios.get(`http://localhost:8082/actors/byAnime?animeId=${animeId}`);
+      return res.data;
+    } catch (err) {
+      console.error("Error loading anime voices:", err);
     }
   }
 
