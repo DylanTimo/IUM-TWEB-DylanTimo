@@ -7,7 +7,7 @@ const users_ratings
         anime_id: {type: Number, required: true, min: 0},
         status: {type: String, required: true},
         score: {type: Number, required: true},
-        num_watched_episodes: {type: Number, required: true},
+        num_watched_episodes: {type: Number},
     }
 );
 

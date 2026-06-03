@@ -1,10 +1,20 @@
-<div class = "catalog_container">
+<div id = "personalCatalogContainer" class = "catalog_container hidden">
+    <div id = "personalLeftSide"></div>
+    <div id = "personalCatalog" class = "catalog"></div>
+    <div id = "personalRightSide"></div>
+</div>
+
+<div id = "mainCatalogContainer" class = "catalog_container">
     <div id = "mainLeftSide"></div>
     <div id = "mainCatalog" class = "catalog"></div>
     <div id = "mainRightSide"></div>
     <div></div>
     <button id = "btnLoadMore">boh</button>
 </div>
+
+
+
+
 
 <script id="anime_card_template" type="text/x-handlebars-template">
     <div class = "anime_card" data-id = "\{{id}}"
@@ -33,6 +43,8 @@
         <div id = "anime_card_stats" class = "anime_card_details">Loading stats...</div>
 
         <div id = "anime_card_voices" class = "anime_card_details">Loading voices...</div>
+
+        <div id = "anime_card_ratings" class = "anime_card_details hidden">Loading ratings...</div>
 
     </div>
 </script>

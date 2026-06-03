@@ -26,16 +26,15 @@
 
       const profile = await getUserProfile(username);
 
-      console.log("spanUsername:", spanUsername);
-      console.log("profile:", profile);
-
-
       divWaitingLogin.style.display = "none";
 
       if (profile) {
         const spanUsername = document.getElementById("spanUsername");
         spanUsername.textContent = profile.username;
         divLoggedIn.style.display = "block";
+
+        loadPersonalHome(profile.username);
+
       } else {
         inputName.value = "";
         inputName.placeholder = "Try Again";
@@ -52,7 +51,7 @@
 
   async function getUserProfile(username) {
     try {
-      const res = await axios.get(`http://localhost:3001/user/${username}/profile`);
+      const res = await axios.get(`http://localhost:3000/user/${username}/profile`);
       return res.data;
     } catch (err) {
       if (err.response.status === 404) {
@@ -77,12 +76,6 @@
     closeLeftMenu()
     offset = 0;
     loadHome();
-  });
-  document.getElementById("menu-trending").addEventListener("click", (e) => {
-    e.preventDefault();
-    closeLeftMenu()
-    offset = 0;
-    loadTrending();
   });
   document.getElementById("menu-top").addEventListener("click", (e) => {
     e.preventDefault();
@@ -186,12 +179,42 @@
   // Home
   async function loadHome() {
     try {
-      const res = await queryTopByYear(2025, 20);
-      renderCatalog(res);
+      const res = await queryTop(20, 2025);
+      const catalog = document.querySelector("#mainCatalog");
+      renderCatalog(res, catalog);
     } catch (err) {
       console.error("Errore in loadHome:", err);
     }
   }
+
+  /**
+   * Loading users personal space, querying ratings then taking the animeId to receive animeDetails
+   * to create animeCards.
+   * @param username
+   * @returns {Promise<void>}
+   */
+  async function loadPersonalHome(username){
+    try{
+      const res = await queryRatingsByUser(username);
+      const ratings = res.slice(0, 10);
+
+      const promises = ratings.map( r => queryAnimeById(r.anime_id) );
+      const animeList = await Promise.all(promises);
+
+      const catalog = document.querySelector("#personalCatalog");
+      renderCatalog(animeList, catalog);
+
+      renderRatings(res, catalog);
+
+      const catalogContainer = document.querySelector("#personalCatalogContainer");
+      catalogContainer.classList.remove("hidden");
+
+    } catch (err) {
+      console.error("Errore in loadPersonalHome:", err);
+    }
+  }
+
+
 
   async function loadAnimeByTitle(){
     try{
@@ -206,7 +229,8 @@
         return;
       }
 
-      renderCatalog(res);
+      const catalog = document.querySelector("#mainCatalog");
+      renderCatalog(res, catalog);
     } catch (err) {
       console.error("Errore in loadAnimeByTitle:", err);
     }
@@ -216,7 +240,8 @@
   async function loadRecentAnime() {
     try {
       const res = await queryRecent(20);
-      renderCatalog(res);
+      const catalog = document.querySelector("#mainCatalog");
+      renderCatalog(res, catalog);
     } catch (err) {
       console.error("Errore in loadRecentAnime:", err);
     }
@@ -225,8 +250,9 @@
   //
   async function loadTopGlobal(){
     try{
-      const res = await queryTopGlobal(20);
-      renderCatalog(res);
+      const res = await queryTop(20);
+      const catalog = document.querySelector("#mainCatalog");
+      renderCatalog(res, catalog);
     } catch (err) {
       console.error("Errore in loadTopGlobal:", err);
     }
@@ -317,30 +343,23 @@
   }
 // Query
 
-  async function queryTopByYear(year, max) {
+  async function queryTop(max, year) {
     try {
-      const res = await axios.get(`http://localhost:8082/anime/top?offset=${offset}&max=${max}&year=${year}`);
-      lastQuery = `http://localhost:8082/anime/top?year=${year}&`; // qui metto & finale
-      return res.data;
-    } catch (err) {
-      console.error("Error loading queryTopByYear anime:", err);
-    }
-  }
+      const params = { offset, max };
+      if (year) params.year = year;
 
-  async function queryTopGlobal(max) {
-    try {
-      const res = await axios.get(`http://localhost:8082/anime/top?offset=${offset}&max=${max}`);
-      lastQuery = `http://localhost:8082/anime/top?`;
+      const res = await axios.get("http://localhost:3000/anime/top", { params });
       return res.data;
+
     } catch (err) {
-      console.error("Error loading loadTopGlobal anime:", err);
+      console.error("Error loading queryTop anime:", err);
     }
   }
 
   async function queryRecent(max) {
     try {
-      const res = await axios.get(`http://localhost:8082/anime/recent?offset=${offset}&max=${max}`);
-      lastQuery = `http://localhost:8082/anime/recent?`;
+      const res = await axios.get(`http://localhost:3000/anime/recent?offset=${offset}&max=${max}`);
+      lastQuery = `http://localhost:3000/anime/recent?`;
       return res.data;
     } catch (err) {
       console.error("Error loading loadTopGlobal anime:", err);
@@ -349,7 +368,17 @@
 
   async function queryAnimeByTitle(animeTitle) {
     try{
-      const res = await axios.get(`http://localhost:8082/anime/title?title=${animeTitle}`);
+      const res = await axios.get(`http://localhost:3000/anime/title?title=${animeTitle}`);
+      lastQuery = ``;
+      offset = 0;
+      return res.data;
+    } catch (err) {
+    }
+  }
+
+  async function queryAnimeById(animeId) {
+    try{
+      const res = await axios.get(`http://localhost:3000/anime/${animeId}`);
       lastQuery = ``;
       offset = 0;
       return res.data;
@@ -359,7 +388,7 @@
 
   async function queryAnimeStats(animeId) {
     try{
-      const res = await axios.get(`http://localhost:8082/anime/${animeId}/stats`);
+      const res = await axios.get(`http://localhost:3000/anime/${animeId}/stats`);
       return res.data;
     } catch (err) {
       console.error("Error loading anime stats:", err);
@@ -368,13 +397,21 @@
 
   async function queryAnimeVoices(animeId) {
     try{
-      const res = await axios.get(`http://localhost:8082/actors/byAnime?animeId=${animeId}`);
+      const res = await axios.get(`http://localhost:3000/actors/byAnime?animeId=${animeId}`);
       return res.data;
     } catch (err) {
       console.error("Error loading anime voices:", err);
     }
   }
 
+  async function queryRatingsByUser(username) {
+    try{
+      const res = await axios.get(`http://localhost:3000/user/${username}/ratings`);
+      return res.data;
+    } catch (err) {
+      console.error("Error loading anime by user:", err);
+    }
+  }
 
   async function queryMore() {
     try {
@@ -389,24 +426,46 @@
 
 
 // Render
-  function renderCatalog(animeList) {
+  function renderCatalog(animeList, catalog) {
     const templateSource = document.getElementById("anime_card_template").innerHTML;
     const animeCardTemplate = Handlebars.compile(templateSource);
 
-    const container = document.querySelector(".catalog");
+ //   const container = document.querySelector(".catalog");
 
-    container.innerHTML = animeList
+    catalog.innerHTML = animeList
       .map(a => animeCardTemplate(a))
       .join("");
 
   }
-  function appendToCatalog(animeList) {
+  function appendToCatalog(animeList, catalog) {
     const templateSource = document.getElementById("anime_card_template").innerHTML;
     const animeCardTemplate = Handlebars.compile(templateSource);
 
-    const container = document.querySelector(".catalog");
-    container.innerHTML += animeList
+  //  const container = document.querySelector(".catalog");
+    catalog.innerHTML += animeList
       .map(a => animeCardTemplate(a))
       .join("");
   }
+
+  function renderRatings(ratings, catalog){
+    ratings.forEach(rating => {
+      const card = catalog.querySelector(`.anime_card[data-id="${rating.anime_id}"]`);
+      if (!card) return;
+
+      const ratingBox = card.querySelector("#anime_card_ratings");
+      if (ratingBox) {
+        ratingBox.classList.remove("hidden");
+
+        ratingBox.innerHTML = `
+      <p>Status: ${rating.status}</p>
+      <p>Score given: ${rating.score}</p>
+      <p>Episodes Watched: ${rating.num_watched_episodes}</p>
+    `;
+      }
+    });
+  }
+
+
+
+
 })();

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Tag(name = "Anime API", description = "Operations on AnimeDB")
 @RestController
-@RequestMapping("/anime/{id}")
+@RequestMapping("/anime/{animeId}")
 public class StatsController {
 
     private final StatsService statsService;
@@ -29,7 +29,7 @@ public class StatsController {
     })
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/stats")
-    public Stats getStatsById(@PathVariable Integer id){
-        return statsService.getById(id);
+    public Stats getStatsById(@PathVariable Integer animeId){
+        return statsService.getById(animeId);
     }
 }

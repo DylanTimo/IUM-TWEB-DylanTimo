@@ -72,7 +72,7 @@ public class AnimeController {
     })
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/top")
-    public List<Anime> getTopByYear(@RequestParam Integer offset,
+    public List<Anime> getTop(@RequestParam Integer offset,
                                     @RequestParam Integer max,
                                     @RequestParam(required = false) Integer year
                                     ){
