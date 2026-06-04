@@ -1,14 +1,14 @@
 package com.example.javaserverssqldb.actor_works;
 
-import com.example.javaserverssqldb.anime.Anime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorksRepository extends JpaRepository<Works, Long> {
+
+    Optional<Works> findById(long id);
 
     @Query("SELECT w FROM Works w WHERE w.animeId = :id")
     List<Works> findByAnimeId(Integer id);

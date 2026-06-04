@@ -23,6 +23,7 @@ public class AnimeController {
     }
 
 
+
     @Operation(
             summary = "Get an anime by its id"
     )
@@ -38,6 +39,7 @@ public class AnimeController {
     }
 
 
+
     @Operation(
             summary = "Get an anime by its title"
     )
@@ -50,6 +52,8 @@ public class AnimeController {
     public List<Anime> getAnimeByTitle(@RequestParam String title){ // List<Anime>, maybe there are some anime with the same name
         return animeService.getByTitle(title);
     }
+
+
 
     @Operation(
             summary = "Get every anime in the db"

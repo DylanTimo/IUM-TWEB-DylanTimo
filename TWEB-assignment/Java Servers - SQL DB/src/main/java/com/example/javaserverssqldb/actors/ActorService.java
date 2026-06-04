@@ -21,6 +21,11 @@ public class ActorService {
         this.worksService = worksService;
     }
 
+    /**
+     * Get an actor by its id
+     * @param id actor id
+     * @return actor
+     */
     public Actor getById(Integer id){
         if(id == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing - getById");

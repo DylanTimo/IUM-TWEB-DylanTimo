@@ -30,36 +30,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
-const swaggerJSDoc = require('swagger-jsdoc');
+// openapi
 const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
-// 1. Define Swagger options
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Student API',
-      version: '1.0.0',
-      description: 'A simple API to manage students',
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000',
-        description: 'Local server',
-      },
-    ],
-  },
-  // 2. Paths to files with documentation
-  apis: [path.join(__dirname, 'routes/*.js')], // your route files
-};
-
-// 3. Generate the Swagger specification
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
-// 4. Serve the Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerDocument = YAML.load('./swagger.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -10,6 +10,7 @@ servers:
     description: Local server of the microservices connected do mongodb server
 
 paths:
+
   /anime/{id}/ratings:
     get:
       summary: Returns all ratings of a particular anime
@@ -23,7 +24,7 @@ paths:
             type: integer
           description: Anime ID
       responses:
-        200:
+        '200':
           description: List of ratings
           content:
             application/json:
@@ -43,10 +44,10 @@ paths:
                       rating: 9
                       created_at: "2024-01-02"
 
-        404:
+        '404':
           description: No ratings found
 
-        500:
+        '500':
           description: Internal server error
 
   /user/{username}/ratings:
@@ -61,7 +62,7 @@ paths:
             type: string
           description: Username of the user
       responses:
-        200:
+        '200':
           description: List of ratings submitted by the user
           content:
             application/json:
@@ -69,9 +70,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserRating'
-        404:
+              examples:
+                esempio:
+                  value:
+                    - userId: 123
+                      animeId: 30276
+                      rating: 8
+                      created_at: "2024-01-01"
+                    - userId: 456
+                      animeId: 30276
+                      rating: 9
+                      created_at: "2024-01-02"
+        '404':
           description: No ratings found for this user
-        500:
+        '500':
           description: Internal server error
 
   /user/{username}/profile:
@@ -86,15 +98,15 @@ paths:
             type: string
           description: Username of the user
       responses:
-        200:
+        '200':
           description: User profile found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserProfile'
-        404:
+        '404':
           description: User profile not found
-        500:
+        '500':
           description: Internal server error
 
   /user/{username}/favs:
@@ -109,7 +121,7 @@ paths:
             type: string
           description: Username of the user
       responses:
-        200:
+        '200':
           description: List of favorite anime
           content:
             application/json:
@@ -117,9 +129,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserFav'
-        404:
+        '404':
           description: No favorites found for this user
-        500:
+        '500':
           description: Internal server error
 
 

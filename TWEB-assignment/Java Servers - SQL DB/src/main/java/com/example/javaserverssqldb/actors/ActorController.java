@@ -16,10 +16,11 @@ public class ActorController {
 
     private final ActorService actorService;
 
-    public ActorController(ActorService actorService,
-                           WorksService worksService){
+    public ActorController(ActorService actorService){
         this.actorService = actorService;
     }
+
+
 
     @Operation(
             summary = "Get an actor by its id"
@@ -32,6 +33,8 @@ public class ActorController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Actor getActorById(@PathVariable Integer id){ return actorService.getById(id); }
+
+
 
     @Operation(
             summary = "Get a list of actors by an anime id"

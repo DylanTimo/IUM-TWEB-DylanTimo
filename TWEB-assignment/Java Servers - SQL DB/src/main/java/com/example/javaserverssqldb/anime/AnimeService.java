@@ -51,6 +51,12 @@ public class AnimeService {
      */
     public List<Anime> getAll(){ return this.animeRepository.findAll(); }
 
+    /**
+     * Get top anime by year
+     * @param pageable pageable object with search parameters
+     * @param year year to filter
+     * @return List of anime, sorted by score
+     */
     public List<Anime> getTopByYear(Pageable pageable, Integer year){
         if(pageable.getPageSize() < 1 || year == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopByYear");

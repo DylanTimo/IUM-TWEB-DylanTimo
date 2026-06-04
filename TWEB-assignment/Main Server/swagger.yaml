@@ -1,0 +1,404 @@
+openapi: 3.0.0
+
+info:
+  title: Main Server
+  version: 1.0.0
+  description: >
+    Main server acting as a gateway between frontend and microservices.
+    It renders Handlebars pages and proxies requests to:
+      - Java SpringBoot Anime Service (port 8082)
+      - MongoDB User Service (port 3001)
+      - Actors Service (port 8084)
+
+servers:
+  - url: http://localhost:3000
+    description: Local main server
+
+paths:
+
+  /:
+    get:
+      summary: Render homepage
+      description: >
+        Returns a Handlebars-rendered homepage containing anime data.
+        Data is fetched from the Anime microservice.
+      responses:
+        '200':
+          description: HTML homepage
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html>...</html>"
+
+  /anime/{animeId}:
+    get:
+      summary: Get anime by ID
+      description: >
+        Proxies request to **GET http://localhost:8082/anime/{animeId}**.
+      parameters:
+        - in: path
+          name: animeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Anime details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+        '400':
+          description: ID missing
+        '404':
+          description: Anime not found
+        '500':
+          description: Errore interno nel main server
+
+  /anime/{animeId}/stats:
+    get:
+      summary: Get anime stats by its ID
+      description: >
+        Proxies request to **GET http://localhost:8082/anime/${animeId}/stats**.
+      parameters:
+        - in: path
+          name: animeId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Anime stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnimeStats'
+        '404':
+          description: Stats not found
+        '500':
+          description: Errore interno nel main server
+
+  /anime/title:
+    get:
+      summary: Get a list of anime that contains the given title
+      description: >
+        Proxies request to **GET http://localhost:8082/anime/title**.
+      parameters:
+        - in: query
+          name: title
+          schema:
+            type: string
+            example: Demon slayer
+      responses:
+        '200':
+          description: Anime stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+        '400':
+          description: title non valido
+        '500':
+          description: Errore interno nel main server
+
+  /anime/top:
+    get:
+      summary: Get top anime list
+      description: >
+        Proxies request to **GET http://localhost:8082/anime/top**.
+        Supports pagination and optional year filter.
+        If year is not specified, gets the top anime of all time.
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            example: 0
+        - in: query
+          name: max
+          schema:
+            type: integer
+            example: 20
+        - in: query
+          name: year
+          required: false
+          schema:
+            type: integer
+            example: 2025
+      responses:
+        '200':
+          description: List of anime
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anime'
+        '400':
+          description: Invalid parameters
+        '500':
+          description: Errore interno nel main server
+
+  /anime/recent:
+    get:
+      summary: Get recent anime list
+      description: >
+        Proxies request to **GET http://localhost:8082/anime/recent**.
+        Supports pagination and optional year filter.
+        The list is sorted by release date descending, with the most recent anime first.
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            example: 0
+        - in: query
+          name: max
+          schema:
+            type: integer
+            example: 20
+      responses:
+        '200':
+          description: List of anime
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anime'
+        '400':
+          description: max not valid
+        '500':
+          description: Errore interno nel main server
+
+  /user/{username}/profile:
+    get:
+      summary: Get user profile by username
+      description: >
+        Proxies request to **GET http://localhost:3001/user/${username}/profile**.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Username of the user
+      responses:
+        '200':
+          description: User profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '404':
+          description: User profile not found
+        '500':
+          description: Errore interno nel main server
+
+  /user/{username}/ratings:
+    get:
+      summary: Get all ratings submitted by a specific user
+      description: >
+        Proxies request to **GET http://localhost:3001/user/${username}/profile**.
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Username of the user
+      responses:
+        200:
+          description: List of ratings submitted by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRating'
+              examples:
+                esempio:
+                  value:
+                    - userId: 123
+                      animeId: 30276
+                      rating: 8
+                      created_at: "2024-01-01"
+                    - userId: 456
+                      animeId: 30276
+                      rating: 9
+                      created_at: "2024-01-02"
+        404:
+          description: No ratings found for this user
+        '500':
+          description: Errore interno nel main server
+
+
+
+components:
+  schemas:
+    Anime:
+      type: object
+      description: Rappresenta un anime proveniente dal microservizio Java Postgres (port 8082)
+      properties:
+        id:
+          type: integer
+          example: 59062
+        title:
+          type: string
+          example: "Gachiakuta"
+        image_url:
+          type: string
+          example: "https://cdn.myanimelist.net/images/anime/12/102599.jpg"
+        type:
+          type: string
+          example: "TV"
+        status:
+          type: string
+          example: "Finished Airing"
+        score:
+          type: number
+          format: float
+          example: 8.12
+        rank:
+          type: integer
+          example: 1
+        members:
+          type: integer
+          example: 100000
+        favorites:
+          type: integer
+          example: 10000
+        genres:
+          type: string
+          description: Lista di generi in formato stringa
+          example: "['Action', 'Fantasy']"
+        themes:
+          type: string
+          description: Lista di temi in formato stringa
+          example: "['Drama', 'Sci-Fi']"
+        source:
+          type: string
+          example: "Manga"
+        episodes:
+          type: integer
+          example: 24
+        year:
+          type: integer
+          example: 2025
+        producers:
+          type: string
+          description: Lista di produttori in formato stringa
+          example: "['Studio Ghibli']"
+
+
+    UserProfile:
+      type: object
+      description: Profilo utente proveniente dal microservizio express MongoDB (port 3001)
+      properties:
+        username:
+          type: string
+          example: "Store97"
+        gender:
+          type: string
+          example: "Male"
+        birthday:
+          type: string
+          example: "1997-10-21"
+        location:
+          type: string
+          example: "Italy"
+        joined:
+          type: string
+          example: "2020-05-12"
+        watching:
+          type: integer
+          example: 13
+        completed:
+          type: integer
+          example: 55
+        on_hold:
+          type: integer
+          example: 5
+        dropped:
+          type: integer
+          example: 19
+        plan_to_watch:
+          type: integer
+          example: 27
+
+    UserRating:
+      type: object
+      description: Valutazione di un anime da parte di un utente
+      properties:
+        userId:
+          type: integer
+          example: 123
+        animeId:
+          type: integer
+          example: 30276
+        rating:
+          type: number
+          example: 8
+        created_at:
+          type: string
+          example: "2024-01-01"
+
+    AnimeStats:
+      type: object
+      description: Statistiche aggregate dell'anime provenienti dal microservizio Java Postgres (port 8082)
+      properties:
+        id:
+          type: integer
+          description: MAL ID dell'anime
+          example: 58514
+        watching:
+          type: integer
+          example: 110903
+        completed:
+          type: integer
+          example: 187788
+        on_hold:
+          type: integer
+          example: 5320
+        dropped:
+          type: integer
+          example: 1766
+        plan_to_watch:
+          type: integer
+          example: 94576
+        total:
+          type: integer
+          description: Totale voti/utenti che hanno interagito con l'anime
+          example: 400353
+        score1_votes:
+          type: integer
+          example: 391
+        score2_votes:
+          type: integer
+          example: 55
+        score3_votes:
+          type: integer
+          example: 78
+        score4_votes:
+          type: integer
+          example: 223
+        score5_votes:
+          type: integer
+          example: 642
+        score6_votes:
+          type: integer
+          example: 2128
+        score7_votes:
+          type: integer
+          example: 10569
+        score8_votes:
+          type: integer
+          example: 41417
+        score9_votes:
+          type: integer
+          example: 71267
+        score10_votes:
+          type: integer
+          example: 58164
+

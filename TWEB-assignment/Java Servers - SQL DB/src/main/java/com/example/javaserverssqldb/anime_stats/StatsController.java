@@ -19,6 +19,8 @@ public class StatsController {
         this.statsService = statsService;
     }
 
+
+
     @Operation(
             summary = "Get recent anime, calculated by year"
     )
