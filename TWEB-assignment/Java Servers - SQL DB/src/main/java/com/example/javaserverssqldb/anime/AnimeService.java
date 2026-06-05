@@ -1,10 +1,13 @@
 package com.example.javaserverssqldb.anime;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import org.springframework.data.domain.Pageable;
 
 
@@ -19,6 +22,11 @@ public class AnimeService {
     public AnimeService(AnimeRepository animeRepository){
         this.animeRepository = animeRepository;
     }
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
 
     /**
      * Return an anime by its id
@@ -86,6 +94,64 @@ public class AnimeService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopGlobal");
 
         return this.animeRepository.findRecent(pageable);
+    }
+
+    /**
+     * Advanced query, with pagination
+     * @param type anime type
+     * @param status anime status
+     * @param genres anime genres
+     * @param orderBy order by
+     * @param direction asc or desc
+     * @param offset page number
+     * @param max max results per page
+     * @return list of anime
+     */
+    public List<Anime> advancedQuery(String type,
+                                     String status,
+                                     String genres,
+                                     String source,
+                                     String orderBy,
+                                     String direction,
+                                     Integer offset, Integer max){
+
+        List<String> allowedOrderBy = List.of("rank", "favorites", "score", "members", "year");
+        List<String> allowedDirection = List.of("asc", "desc");
+        List<String> allowedStatus = List.of("Currently Airing", "Finished Airing", "Not yet aired"); // -
+        List<String> allowedType = List.of("TV", "Movie", "Music", "OVA", "ONA", "PV", "CM", "Special", "TV Special");
+        List<String> allowedSource = List.of("Original", "Game", "Manga", "Web manga", "Book", "Picture book", "Novel",
+                "Visual novel", "Light novel", "Web novel", "Mixed media", "4-koma manga", "Music", "Radio", "Card game", "Other");
+
+
+        String jpql = "SELECT a FROM Anime a WHERE 1=1";
+
+
+        if(type != null && allowedType.contains(type)) jpql += " AND a.type = :type";
+        if(status != null && allowedStatus.contains(status)) jpql += " AND a.status = :status";
+        if(genres != null) jpql += " AND a.genres LIKE :genres";
+        if(source != null && allowedSource.contains(source)) jpql += " AND a.source = :source";
+        if(orderBy != null && allowedOrderBy.contains(orderBy.toLowerCase())) {
+            jpql += " ORDER BY a." + orderBy;
+
+            if(direction != null && allowedDirection.contains(direction.toLowerCase())) {
+                jpql += " " + direction.toUpperCase();
+            } else {
+                jpql += " ASC"; // default
+            }
+        }
+
+        TypedQuery<Anime> query = entityManager.createQuery(jpql, Anime.class);
+
+        if (type != null) query.setParameter("type", type);
+        if (status != null) query.setParameter("status", status);
+        if (genres != null) query.setParameter("genres", "%" + genres + "%");
+        if (orderBy != null) query.setParameter("orderBy", orderBy);
+        if (source != null) query.setParameter("source", source);
+
+        query.setFirstResult(offset * max); // offset is the page number
+        query.setMaxResults(max);
+
+        return query.getResultList(); // No repository
     }
 
 

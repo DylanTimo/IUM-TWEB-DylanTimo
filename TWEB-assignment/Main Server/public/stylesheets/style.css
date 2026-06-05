@@ -52,10 +52,7 @@
 }
 
 
-.row{
-  display: flex;
-  flex-direction: row;
-}
+
 
 
 /* Hamburger-MenuOffCanvas */
@@ -95,14 +92,19 @@
 }
 
 /* Catalog */
+#mainCatalogContainer{
+  flex-direction: column;
+  padding-top: 80px;
+}
+
+.main_catalog_header{
+  background-color: rgba(255, 255, 255, 0.5);
+}
 .catalog_container{
   display: grid;
   grid-template-columns: 1fr 6fr 1fr;
   margin: 0 auto;
 
-  padding-top: 80px;
-
-  min-height: 500px;
   max-width: 1200px;
 }
 
@@ -213,6 +215,54 @@
   margin-bottom: 2px;
 }
 
+/* Filter search*/
+#mainCatalogHeader {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+#filtersBar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+#filtersBar select,
+#filtersBar input,
+#filtersBar button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+#filtersBar button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+#filtersBar button:hover {
+  background-color: #005fcc;
+}
+
+#orderContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btnOrderByOrientation {
+  padding: 6px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+}
+
 
 
 /* Overlay */
@@ -250,7 +300,6 @@
 a {
   color: #00B7FF;
 }
-
 p{
   padding: 1px;
 }
@@ -265,7 +314,14 @@ body {
 .hidden{
   display: none;
 }
-
+.row{
+  display: flex;
+  flex-direction: row;
+}
+.column{
+  display: flex;
+  flex-direction: column;
+}
 #app {
   width: 100%;
   position: relative;

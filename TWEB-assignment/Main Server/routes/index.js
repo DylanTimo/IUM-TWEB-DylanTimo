@@ -17,6 +17,7 @@ const anime_controller = require('../controllers/anime');
 router.get('/anime/title', anime_controller.findByTitle);
 router.get('/anime/top', anime_controller.queryTop);
 router.get('/anime/recent', anime_controller.queryRecent);
+router.get('/anime/advanced', anime_controller.queryWithFilters);
 
 router.get('/anime/:animeId', anime_controller.findById);
 router.get('/anime/:animeId/stats', anime_controller.queryStats);
