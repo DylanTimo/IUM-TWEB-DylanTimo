@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
@@ -122,9 +122,11 @@ public class AnimeController {
                                      @RequestParam(required = false) String genres,
                                      @RequestParam(required = false) String orderBy,
                                      @RequestParam(required = false) String direction,
+                                     @RequestParam(required = false) Integer year,
                                      @RequestParam Integer offset,
                                      @RequestParam Integer max){
 
-        return animeService.advancedQuery(type, status, source, genres, orderBy, direction, offset, max);
+        return animeService.advancedQuery(type, status, source, genres, orderBy, direction, year, offset, max);
     }
+
 }

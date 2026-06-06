@@ -77,16 +77,19 @@ export async function queryStats(req, res) {
 
 export async function queryWithFilters(req, res) {
   try {
-    const { offset, max, year, status, order, direction, type, source } = req.query;
+    const { offset, max, year, status, orderBy, direction, type, source } = req.query;
 
-    const response = await axios.get("http://localhost:8082/anime/top", {
-      params: { offset, max, year, status, order, direction, type, source }
+    const response = await axios.get("http://localhost:8082/anime/advanced", {
+      params: { offset, max, year, status, orderBy, direction, type, source }
     });
 
     res.json(response.data);
 
   } catch (err) {
-    console.error("Errore nel main server (queryTop):", err.message);
+    if (err.response) {
+      return res.status(err.response.status).json(err.response.data); // api server error
+    }
+    console.error("Errore nel main server (queryWithFilters):", err.message);
     res.status(500).json({ message: "Errore interno" });
   }
 }

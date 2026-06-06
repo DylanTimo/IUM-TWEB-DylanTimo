@@ -172,6 +172,76 @@ paths:
         '500':
           description: Errore interno nel main server
 
+  /anime/advanced:
+    get:
+      summary: Get advanced anime list
+      description: >
+        Proxies request to **GET http://localhost:8082/anime/advanced**.
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            example: 0
+          description: Offset for pagination
+        - in: query
+          name: max
+          schema:
+            type: integer
+            example: 20
+        - in: query
+          name: year
+          required: false
+          schema:
+            type: integer
+            example: 2025
+        - in: query
+          name: status
+          required: false
+          schema:
+            type: string
+            enum: [Currently Airing, Finished Airing, Not yet aired]
+            example: Currently Airing
+        - in: query
+          name: orderBy
+          required: false
+          schema:
+            type: string
+            enum: [rank, score, members, favorites, year]
+            example: rank
+        - in: query
+          name: direction
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            example: asc
+        - in: query
+          name: type
+          required: false
+          schema:
+            type: string
+            enum: [TV, Movie, Music, OVA, ONA, PV, CM, Special, TV Special]
+            example: TV
+        - in: query
+          name: source
+          required: false
+          schema:
+            type: string
+            enum: [Original, Game, Manga, Web manga, Book, Picture book, Novel,
+                   Visual novel, Light novel, Web novel, Mixed media, 4-koma manga, Music, Radio, Card game, Other]
+            example: Game
+      responses:
+        '200':
+          description: User profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anime'
+        '500':
+          description: Errore interno
+
+
   /user/{username}/profile:
     get:
       summary: Get user profile by username

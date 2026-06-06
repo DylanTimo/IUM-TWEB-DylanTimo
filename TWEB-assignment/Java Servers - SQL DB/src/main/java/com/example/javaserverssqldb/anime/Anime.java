@@ -1,4 +1,5 @@
 package com.example.javaserverssqldb.anime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -25,10 +26,10 @@ public class Anime {
     private String status;
 
     @Column(name = "score")
-    private float score;
+    private Float score;
 
     @Column(name = "rank")
-    private float rank;
+    private Integer rank;
 
     @Column(name = "members")
     private Integer members;
@@ -91,11 +92,11 @@ public class Anime {
     public String getStatus(){ return this.status; }
     public void setStatus(String status){ this.status = status; }
 
-    public float getRank(){ return  this.rank; }
-    public void setRank(float rank){ this.rank = rank; }
+    public Integer getRank(){ return  this.rank; }
+    public void setRank(Integer rank){ this.rank = rank; }
 
-    public float getScore(){ return this.score; }
-    public void setScore(float score){ this.score = score; }
+    public Float getScore(){ return this.score; }
+    public void setScore(Float score){ this.score = score; }
 
     public Integer getMembers(){ return this.members; }
     public void setMembers(Integer members){ this.members = members; }

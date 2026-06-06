@@ -69,7 +69,7 @@ public class AnimeService {
         if(pageable.getPageSize() < 1 || year == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "max not valid - getTopByYear");
 
-        return this.animeRepository.findTopByYear(pageable, year);
+        return this.animeRepository.findTopByYear(year, pageable);
     }
 
     /**
@@ -109,10 +109,11 @@ public class AnimeService {
      */
     public List<Anime> advancedQuery(String type,
                                      String status,
-                                     String genres,
                                      String source,
+                                     String genres,
                                      String orderBy,
                                      String direction,
+                                     Integer year,
                                      Integer offset, Integer max){
 
         List<String> allowedOrderBy = List.of("rank", "favorites", "score", "members", "year");
@@ -130,7 +131,10 @@ public class AnimeService {
         if(status != null && allowedStatus.contains(status)) jpql += " AND a.status = :status";
         if(genres != null) jpql += " AND a.genres LIKE :genres";
         if(source != null && allowedSource.contains(source)) jpql += " AND a.source = :source";
+        if(year != null) jpql += " AND a.year = :year";
         if(orderBy != null && allowedOrderBy.contains(orderBy.toLowerCase())) {
+
+            jpql += " AND a." + orderBy + " IS NOT NULL";
             jpql += " ORDER BY a." + orderBy;
 
             if(direction != null && allowedDirection.contains(direction.toLowerCase())) {
@@ -145,8 +149,8 @@ public class AnimeService {
         if (type != null) query.setParameter("type", type);
         if (status != null) query.setParameter("status", status);
         if (genres != null) query.setParameter("genres", "%" + genres + "%");
-        if (orderBy != null) query.setParameter("orderBy", orderBy);
         if (source != null) query.setParameter("source", source);
+        if (year != null) query.setParameter("year", year);
 
         query.setFirstResult(offset * max); // offset is the page number
         query.setMaxResults(max);

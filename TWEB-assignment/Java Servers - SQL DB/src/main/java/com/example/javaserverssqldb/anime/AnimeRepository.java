@@ -19,13 +19,23 @@ public interface AnimeRepository extends JpaRepository<Anime, Integer> {
 
     List<Anime> findByTitleContainingIgnoreCase(String title);
 
-    @Query("SELECT a FROM Anime a WHERE a.year = :year ORDER BY a.score DESC")
-    List<Anime> findTopByYear(@Param("year") Pageable pageable, Integer year);
+    @Query("SELECT a " +
+            "FROM Anime a " +
+            "WHERE a.year = :year " +
+            "AND a.score IS NOT NULL " +
+            "ORDER BY a.score DESC")
+    List<Anime> findTopByYear(@Param("year") Integer year, Pageable pageable);
 
-    @Query("SELECT a FROM Anime a ORDER BY a.score DESC")
+    @Query("SELECT a " +
+            "FROM Anime a " +
+            "WHERE a.score IS NOT NULL " +
+            "ORDER BY a.score DESC")
     List<Anime> findTopGlobal(Pageable pageable);
 
-    @Query("SELECT a FROM Anime a ORDER BY a.year DESC")
+    @Query("SELECT a " +
+            "FROM Anime a " +
+            "WHERE a.year IS NOT NULL " +
+            "ORDER BY a.year DESC")
     List<Anime> findRecent(Pageable pageable);
 
 

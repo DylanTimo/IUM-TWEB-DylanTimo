@@ -201,20 +201,22 @@
   /**
    * Filter section to send advanced query
    */
-  document.getElementById("btnApplyFilters").addEventListener("click", async () => {
+  document.getElementById("btnApplyFilters").addEventListener("click", async (e) => {
+    e.preventDefault();
+
     const status = document.getElementById("filterStatus").value;
-    const order = document.getElementById("filterOrder").value;
+    const orderBy = document.getElementById("filterOrder").value;
     const type = document.getElementById("filterType").value;
     const source = document.getElementById("filterSource").value;
     const year = document.getElementById("filterYear").value;
 
     const params = {
-      offset: 0,
-      max: 20
+      offset,
+      max
     };
 
     if (status) params.status = status;
-    if (order){ params.order = order; params.direction = orderDirection;}
+    if (orderBy){ params.orderBy = orderBy; params.direction = orderDirection;}
     if (type) params.type = type;
     if (source) params.source = source;
     if (year) params.year = year;
@@ -241,6 +243,26 @@
     details.forEach(detail => detail.classList.toggle("open"));
   }
 
+  function updateOffset() {
+    offset += 1;
+    const url = new URL(lastQuery);
+    url.searchParams.set("offset", offset);
+    lastQuery = url.toString();
+  }
+
+  /**
+   * Reset the filters, clearing the input fields.
+   */
+  function resetFilters(){
+    document.getElementById("filterStatus").value = "";
+    document.getElementById("filterOrder").value = "";
+    document.getElementById("filterType").value = "";
+    document.getElementById("filterSource").value = "";
+    document.getElementById("filterYear").value = "xxxx";
+  }
+  const btnResetFilters = document.getElementById("btnResetFilters");
+  btnResetFilters.addEventListener("click", resetFilters);
+
   /**
    * In the OrderBy Filter section, changing the order of the anime cards.
    * @type {string}
@@ -262,7 +284,7 @@
    */
   async function loadHome() {
     try {
-      const res = await queryTop(20, 2025);
+      const res = await queryTop(2025);
       const catalog = document.querySelector("#mainCatalog");
       renderCatalog(res, catalog);
     } catch (err) {
@@ -330,7 +352,7 @@
    */
   async function loadRecentAnime() {
     try {
-      const res = await queryRecent(20);
+      const res = await queryRecent();
       const catalog = document.querySelector("#mainCatalog");
       renderCatalog(res, catalog);
     } catch (err) {
@@ -344,7 +366,7 @@
    */
   async function loadTopGlobal(){
     try{
-      const res = await queryTop(20);
+      const res = await queryTop();
       const catalog = document.querySelector("#mainCatalog");
       renderCatalog(res, catalog);
     } catch (err) {
@@ -367,15 +389,17 @@
    */
   let lastQuery = "";
   let offset = 0;
+  let max = 20;
 
   async function loadMore(){
     try{
       if(lastQuery === ""){
         return;
       }
-      offset += 1;
       const res = await queryMore();
-      appendToCatalog(res);
+
+      const catalog = document.querySelector("#mainCatalog");
+      appendToCatalog(res, catalog);
     } catch (err) {
       console.error("Errore in loadMore:", err);
     }
@@ -451,11 +475,10 @@
 
   /**
    * Querying the server for the top anime, with the given max and year.
-   * @param max Max number of anime to query
    * @param year Year to query the anime
    * @returns {Promise<*>}
    */
-  async function queryTop(max, year) {
+  async function queryTop(year) {
     try {
       const params = { offset, max };
       if (year) params.year = year;
@@ -471,10 +494,9 @@
   /**
    * Querying the server for the recent anime, with the given max.
    * Year is not required, returns DESC.
-   * @param max Max number of anime to query
    * @returns {Promise<*>}
    */
-  async function queryRecent(max) {
+  async function queryRecent() {
     try {
       const res = await axios.get(`http://localhost:3000/anime/recent?offset=${offset}&max=${max}`);
       lastQuery = `http://localhost:3000/anime/recent?`;
@@ -563,10 +585,18 @@
    */
   async function queryWithFilters(params){
     try{
+      console.log(params);
+      offset = 0;
       const res = await axios.get("http://localhost:3000/anime/advanced", { params })
+
+      const qs = new URLSearchParams(params).toString();
+      lastQuery = `http://localhost:3000/anime/advanced?${qs}`;
+
       return res.data;
     } catch (err) {
       console.error("Error loading anime by user:", err);
+      resetFilters();
+      await loadHome();
     }
   }
 
@@ -576,9 +606,8 @@
    */
   async function queryMore() {
     try {
-      const max = 15;
-      const url = `${lastQuery}offset=${offset}&max=${max}`
-      const res = await axios.get(url);
+      updateOffset();
+      const res = await axios.get(lastQuery);
       return res.data;
     } catch (err) {
       console.error("Error loading loadTopGlobal anime:", err);

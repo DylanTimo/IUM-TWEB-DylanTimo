@@ -10,10 +10,14 @@ public interface WorksRepository extends JpaRepository<Works, Long> {
 
     Optional<Works> findById(long id);
 
-    @Query("SELECT w FROM Works w WHERE w.animeId = :id")
+    @Query("SELECT w " +
+            "FROM Works w " +
+            "WHERE w.animeId = :id")
     List<Works> findByAnimeId(Integer id);
 
-    @Query("SELECT w FROM Works w WHERE w.actor.id = :id")
+    @Query("SELECT w " +
+            "FROM Works w " +
+            "WHERE w.actor.id = :id")
     List<Works> findByActorId(Integer id);
 
    // @Query("SELECT w FROM Works w WHERE w.characterId = :id")
