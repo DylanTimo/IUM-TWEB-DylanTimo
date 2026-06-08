@@ -77,10 +77,10 @@ export async function queryStats(req, res) {
 
 export async function queryWithFilters(req, res) {
   try {
-    const { offset, max, year, status, orderBy, direction, type, source } = req.query;
+    const { offset, max, year, status, orderBy, direction, type, genres, source } = req.query;
 
     const response = await axios.get("http://localhost:8082/anime/advanced", {
-      params: { offset, max, year, status, orderBy, direction, type, source }
+      params: { offset, max, year, status, orderBy, direction, type, genres, source }
     });
 
     res.json(response.data);

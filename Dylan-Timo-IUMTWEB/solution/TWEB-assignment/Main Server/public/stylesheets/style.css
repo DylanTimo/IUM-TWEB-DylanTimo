@@ -1,4 +1,4 @@
-
+/*      Navbar section        file: navbar.hbs */
 .navbar {
   display: flex;
   position: fixed;
@@ -39,6 +39,7 @@
   min-width: 0;
 }
 
+/*      Login Section       file: login.hbs */
 #containerLogin{
   display: flex;
   flex-direction: row;
@@ -51,10 +52,7 @@
   justify-content: flex-end;
 }
 
-
-
-
-
+/*      Left side menu Section      file: off_canvas_menu.hbs */
 /* Hamburger-MenuOffCanvas */
 #btnHamburger{
   font-size: 28px;
@@ -91,7 +89,7 @@
   cursor: pointer;
 }
 
-/* Catalog */
+/*      Catalogs Section      file: catalog.hbs */
 #mainCatalogContainer{
   flex-direction: column;
   padding-top: 80px;
@@ -124,7 +122,7 @@
 #mainCatalog{}
 
 
-/* Anime_card*/
+/*      Anime_card Section       file: catalog.hbs <script> */
 .anime_card{
   display: flex;
   flex-direction: column;
@@ -215,13 +213,7 @@
   margin-bottom: 2px;
 }
 
-/* Filter search*/
-#mainCatalogHeader {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px 0;
-}
-
+/*        Filter search Section        file: catalog_filter.hbs */
 #filtersBar {
   display: flex;
   gap: 10px;
@@ -265,7 +257,7 @@
 
 
 
-/* Overlay */
+/*      Overlay Section        file: off_canvas_menu.hbs */
 #overlay {
   position: fixed;
   top: 0;
@@ -281,7 +273,7 @@
   display: block;
 }
 
-/* Main div container */
+/*      Main div container      file: index.hbs */
 #divBackground{
 
   width: 100%;
@@ -303,10 +295,7 @@ a {
 p{
   padding: 1px;
 }
-
-body {
-
-}
+body {}
 
 .show{
   display: block;

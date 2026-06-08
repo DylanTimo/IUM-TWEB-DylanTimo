@@ -176,11 +176,32 @@
       // Open New Card
       toggleCard(card);
       currentlyOpenCard = card;
-      if(card.dataset.statsloaded === "false")
-        loadAnimeStats(card.dataset.id, card);
-      if(card.dataset.voicesloaded === "false")
-        loadAnimeVoices(card.dataset.id, card);
 
+      // -----
+      // STATS
+      // -----
+      if (card.dataset.statsloaded !== "true") {
+        const cachedStats = localLoadCard(card.dataset.id, "stats");
+        if (cachedStats) {
+          const statsContainer = card.querySelector("#anime_card_stats");
+          statsContainer.innerHTML = cachedStats;
+        } else {
+          loadAnimeStats(card.dataset.id, card);
+        }
+      }
+
+      // -----
+      // VOICES
+      // -----
+      if (card.dataset.voicesloaded !== "true"){
+        const cachedVoices = localLoadCard(card.dataset.id, "voices");
+        if (cachedVoices) {
+          const voicesContainer = card.querySelector("#anime_card_voices");
+          voicesContainer.innerHTML = cachedVoices;
+        } else {
+          loadAnimeVoices(card.dataset.id, card);
+        }
+      }
       return;
     }
 
@@ -207,6 +228,7 @@
     const status = document.getElementById("filterStatus").value;
     const orderBy = document.getElementById("filterOrder").value;
     const type = document.getElementById("filterType").value;
+    const genres = document.getElementById("inputGenre").value;
     const source = document.getElementById("filterSource").value;
     const year = document.getElementById("filterYear").value;
 
@@ -218,6 +240,7 @@
     if (status) params.status = status;
     if (orderBy){ params.orderBy = orderBy; params.direction = orderDirection;}
     if (type) params.type = type;
+    if (genres) params.genres = genres;
     if (source) params.source = source;
     if (year) params.year = year;
 
@@ -257,11 +280,33 @@
     document.getElementById("filterStatus").value = "";
     document.getElementById("filterOrder").value = "";
     document.getElementById("filterType").value = "";
+    document.getElementById("inputGenre").value = "";
     document.getElementById("filterSource").value = "";
     document.getElementById("filterYear").value = "xxxx";
   }
   const btnResetFilters = document.getElementById("btnResetFilters");
   btnResetFilters.addEventListener("click", resetFilters);
+
+  /**
+   * Saving the cards in the local storage, to avoid reloading them.
+   * @param animeId Anime Id to save the card
+   * @param content Content of the card to save
+   * @param type Type of the card to save, like voices or stats
+   */
+  function localSaveCard(animeId, content, type){
+    localStorage.setItem(`${type}_${animeId}`, content);
+  }
+
+  /**
+   * Loading the cards from the local storage, to avoid reloading them.
+   * @param animeId Anime Id to load the card
+   * @param type Type of the card to load, like voices or stats
+   * @returns {string|null}
+   */
+  function localLoadCard(animeId, type){
+    return localStorage.getItem(`${type}_${animeId}`);
+  }
+
 
   /**
    * In the OrderBy Filter section, changing the order of the anime cards.
@@ -430,7 +475,9 @@
             <p>Dropped by: ${res.dropped}</p>
         `;
 
-      card.dataset.statsLoaded = "true"
+      card.dataset.statsloaded = "true";
+
+      localSaveCard(animeId, statsContainer.innerHTML, "stats"); // Caching the stats
 
     } catch (err) {
       console.error("Errore in loadAnimeStats:", err);
@@ -461,7 +508,9 @@
         </div>
         `).join("");
 
-      card.dataset.voicesloaded = "true"
+      card.dataset.voicesloaded = "true";
+
+      localSaveCard(animeId, voicesContainer.innerHTML, "voices"); // Caching the voices
 
     } catch (err) {
       console.error("Errore in loadAnimeVoices:", err);

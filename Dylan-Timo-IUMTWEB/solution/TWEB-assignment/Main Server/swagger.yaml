@@ -224,6 +224,12 @@ paths:
             enum: [TV, Movie, Music, OVA, ONA, PV, CM, Special, TV Special]
             example: TV
         - in: query
+          name: genres
+          required: false
+          schema:
+            type: string
+            example: Comedy
+        - in: query
           name: source
           required: false
           schema:
