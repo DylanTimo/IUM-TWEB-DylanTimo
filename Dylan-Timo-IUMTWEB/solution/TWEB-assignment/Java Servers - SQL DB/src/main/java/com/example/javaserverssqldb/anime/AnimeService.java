@@ -100,7 +100,7 @@ public class AnimeService {
      * Advanced query, with pagination
      * @param type anime type
      * @param status anime status
-     * @param genres anime genres
+     * @param genres anime genre to filter
      * @param orderBy order by
      * @param direction asc or desc
      * @param offset page number
@@ -108,9 +108,9 @@ public class AnimeService {
      * @return list of anime
      */
     public List<Anime> advancedQuery(String type,
+                                     String genres,
                                      String status,
                                      String source,
-                                     String genres,
                                      String orderBy,
                                      String direction,
                                      Integer year,
@@ -129,7 +129,7 @@ public class AnimeService {
 
         if(type != null && allowedType.contains(type)) jpql += " AND a.type = :type";
         if(status != null && allowedStatus.contains(status)) jpql += " AND a.status = :status";
-        if(genres != null) jpql += " AND a.genres LIKE :genres";
+        if(genres != null) jpql += " AND LOWER(a.genres) LIKE LOWER(:genres)";
         if(source != null && allowedSource.contains(source)) jpql += " AND a.source = :source";
         if(year != null) jpql += " AND a.year = :year";
         if(orderBy != null && allowedOrderBy.contains(orderBy.toLowerCase())) {

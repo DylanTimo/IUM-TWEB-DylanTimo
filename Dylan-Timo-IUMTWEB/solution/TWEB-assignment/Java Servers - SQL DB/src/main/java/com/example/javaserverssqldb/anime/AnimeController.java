@@ -117,16 +117,16 @@ public class AnimeController {
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/advanced")
     public List<Anime> advancedQuery(@RequestParam(required = false) String type,
+                                     @RequestParam(required = false) String genres,
                                      @RequestParam(required = false) String status,
                                      @RequestParam(required = false) String source,
-                                     @RequestParam(required = false) String genres,
                                      @RequestParam(required = false) String orderBy,
                                      @RequestParam(required = false) String direction,
                                      @RequestParam(required = false) Integer year,
                                      @RequestParam Integer offset,
                                      @RequestParam Integer max){
 
-        return animeService.advancedQuery(type, status, source, genres, orderBy, direction, year, offset, max);
+        return animeService.advancedQuery(type, genres, status, source, orderBy, direction, year, offset, max);
     }
 
 }

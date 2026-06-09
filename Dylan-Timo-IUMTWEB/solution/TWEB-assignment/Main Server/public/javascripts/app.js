@@ -16,18 +16,16 @@
   buttonSubmitLogin.addEventListener("click",  (e) => {
     e.preventDefault();
     const username = inputName.value.trim();
-    const password = inputPassword.value.trim();
 
-    login(username, password);
+    login(username);
   });
 
   /**
    * Login function, checking if the user exists, loads the personal space.
    * @param username Username to login
-   * @param password Fake password, not required
    * @returns {Promise<void>}
    */
-  async function login(username, password) {
+  async function login(username) {
     try {
       divLogin.style.display = "none";
       divWaitingLogin.style.display = "block";
@@ -92,18 +90,21 @@
     closeLeftMenu()
     offset = 0;
     loadHome();
+    resetFilters();
   });
   document.getElementById("menu-top").addEventListener("click", (e) => {
     e.preventDefault();
     closeLeftMenu()
     offset = 0;
     loadTopGlobal();
+    resetFilters();
   });
   document.getElementById("menu-recent").addEventListener("click", (e) => {
     e.preventDefault();
     closeLeftMenu()
     offset = 0;
     loadRecentAnime();
+    resetFilters();
   });
 
 
@@ -127,8 +128,9 @@
   btnResetSearch.addEventListener("click", (e) => {
     e.preventDefault();
     inputAnimeSearch.value = "";
-    inputAnimeSearch.placeholder = "Search anime...";
+    inputAnimeSearch.placeholder = "Searching anime...";
     loadHome();
+    resetFilters();
   })
 
   /**
@@ -154,6 +156,7 @@
    * Clicking on a card expands it, clicking outside closes it, toggle if the same card clicked.
    */
   document.addEventListener("click", (event) => {
+    event.preventDefault();
     const card = event.target.closest(".anime_card");
 
     // 1) Click On A Card
@@ -245,6 +248,7 @@
     if (year) params.year = year;
 
     const res = await queryWithFilters(params);
+    if(!res) return;
 
     const catalog = document.querySelector("#mainCatalog");
     renderCatalog(res, catalog);
@@ -285,7 +289,11 @@
     document.getElementById("filterYear").value = "xxxx";
   }
   const btnResetFilters = document.getElementById("btnResetFilters");
-  btnResetFilters.addEventListener("click", resetFilters);
+  btnResetFilters.addEventListener("click", (e) => {
+    resetFilters();
+    e.preventDefault();
+    loadHome();
+  });
 
   /**
    * Saving the cards in the local storage, to avoid reloading them.
@@ -330,6 +338,8 @@
   async function loadHome() {
     try {
       const res = await queryTop(2025);
+      if(!res) return;
+
       const catalog = document.querySelector("#mainCatalog");
       renderCatalog(res, catalog);
     } catch (err) {
@@ -347,10 +357,12 @@
     try{
       // Querying ratings of the user logged in, slicing 10 of them to render them in the catalog.
       const res = await queryRatingsByUser(username);
+      if(!res) return;
+
       const ratings = res.slice(0, 10);
 
       // Making promises to query the anime details of the animeIds of the ratings,
-      const promises = ratings.map( r => queryAnimeById(r.anime_id) );
+      const promises = ratings.map( r => queryAnimeById(r.anime_id));
       const animeList = await Promise.all(promises);
 
       // Rendering the catalog with the animeCards created from the animeDetails.
@@ -375,7 +387,10 @@
     try{
       const inputAnimeSearch = document.getElementById("inputAnimeSearch");
       const animeTitle = inputAnimeSearch.value.trim();
+      if(animeTitle === "") return;
+
       const res = await queryAnimeByTitle(animeTitle);
+      if(!res) return;
 
       if(res.length === 0){
         const inputAnimeSearch = document.getElementById("inputAnimeSearch");
@@ -398,6 +413,8 @@
   async function loadRecentAnime() {
     try {
       const res = await queryRecent();
+      if(!res) return;
+
       const catalog = document.querySelector("#mainCatalog");
       renderCatalog(res, catalog);
     } catch (err) {
@@ -412,6 +429,8 @@
   async function loadTopGlobal(){
     try{
       const res = await queryTop();
+      if(!res) return;
+
       const catalog = document.querySelector("#mainCatalog");
       renderCatalog(res, catalog);
     } catch (err) {
@@ -532,11 +551,20 @@
       const params = { offset, max };
       if (year) params.year = year;
 
-      const res = await axios.get("http://localhost:3000/anime/top", { params });
+      // Check if the query is the same as the last query, if so, return null to avoid unnecessary requests.
+      const newQuery = "http://localhost:3000/anime/top?" + new URLSearchParams(params).toString();
+      if (lastQuery === newQuery) {
+        console.log("Request ignored: same query as last request");
+        return null;
+      }
+
+      const res = await axios.get(newQuery);
+      lastQuery = newQuery;
+      offset = 0;
       return res.data;
 
     } catch (err) {
-      console.error("Error loading queryTop anime:", err);
+      console.error("Error in queryTop:", err);
     }
   }
 
@@ -547,52 +575,86 @@
    */
   async function queryRecent() {
     try {
-      const res = await axios.get(`http://localhost:3000/anime/recent?offset=${offset}&max=${max}`);
-      lastQuery = `http://localhost:3000/anime/recent?`;
+      const params = { offset, max };
+      // Check if the query is the same as the last query, if so, return null to avoid unnecessary requests.
+      const newQuery = "http://localhost:3000/anime/recent?" + new URLSearchParams(params).toString();
+      if (lastQuery === newQuery) {
+        console.log("Request ignored: same query as last request");
+        return null;
+      }
+
+      const res = await axios.get(newQuery);
+      lastQuery = newQuery;
+      offset = 0;
       return res.data;
     } catch (err) {
-      console.error("Error loading loadTopGlobal anime:", err);
+      console.error("Error in queryRecent:", err);
     }
   }
 
   /**
    * Querying the server for the anime by title, with the given title.
-   * @param animeTitle Title of the anime to query
+   * @param title Title of the anime to query
    * @returns {Promise<*>}
    */
-  async function queryAnimeByTitle(animeTitle) {
+  async function queryAnimeByTitle(title) {
     try{
-      const res = await axios.get(`http://localhost:3000/anime/title?title=${animeTitle}`);
-      lastQuery = ``;
+      const params = { title };
+      // Check if the query is the same as the last query, if so, return null to avoid unnecessary requests.
+      const newQuery = "http://localhost:3000/anime/title?" + new URLSearchParams(params).toString();
+      if (lastQuery === newQuery) {
+        console.log("Request ignored: same query as last request:", newQuery);
+        return null;
+      }
+
+      const res = await axios.get(newQuery);
+      lastQuery = newQuery;
       offset = 0;
       return res.data;
     } catch (err) {
+      console.error("Error in queryAnimeByTitle:", err);
     }
   }
 
   /**
    * Querying the server for the anime by id, with the given id.
+   * Using cache to avoid unnecessary requests.
    * @param animeId Id of the anime to query
    * @returns {Promise<*>}
    */
+  const animeCache = new Map();
   async function queryAnimeById(animeId) {
     try{
-      const res = await axios.get(`http://localhost:3000/anime/${animeId}`);
-      lastQuery = ``;
-      offset = 0;
+      if (animeCache.has(animeId)) return animeCache.get(animeId);
+
+      const url = `http://localhost:3000/anime/${animeId}`;
+      const res = await axios.get(url);
+
+      animeCache.set(animeId, res.data);
       return res.data;
     } catch (err) {
+      console.error("Error in queryAnimeById:", err);
+      return null;
     }
   }
 
   /**
    * Querying the server for the anime stats, with the given animeId.
+   * Using cache to avoid unnecessary requests.
    * @param animeId Id of the anime to query
    * @returns {Promise<*>}
    */
+  const statsCache = new Map();
   async function queryAnimeStats(animeId) {
     try{
-      const res = await axios.get(`http://localhost:3000/anime/${animeId}/stats`);
+      if (!animeId) return null;
+      if (statsCache.has(animeId)) return statsCache.get(animeId);
+
+      const url = `http://localhost:3000/anime/${animeId}/stats`;
+      const res = await axios.get(url);
+
+      statsCache.set(animeId, res.data);
+
       return res.data;
     } catch (err) {
       console.error("Error loading anime stats:", err);
@@ -601,15 +663,26 @@
 
   /**
    * Querying the server for the anime voices, with the given animeId.
+   * Using cache to avoid unnecessary requests.
    * @param animeId Id of the anime to query
    * @returns {Promise<*>}
    */
+  const voicesCache = new Map();
   async function queryAnimeVoices(animeId) {
     try{
-      const res = await axios.get(`http://localhost:3000/actors/byAnime?animeId=${animeId}`);
+      if (!animeId) return null;
+      if (voicesCache.has(animeId)) return voicesCache.get(animeId);
+
+      const url = `http://localhost:3000/actors/byAnime?animeId=${animeId}`;
+      const res = await axios.get(url);
+
+      voicesCache.set(animeId, res.data);
+
       return res.data;
+
     } catch (err) {
       console.error("Error loading anime voices:", err);
+      return null;
     }
   }
 
@@ -620,6 +693,8 @@
    */
   async function queryRatingsByUser(username) {
     try{
+      if (!username) return null;
+
       const res = await axios.get(`http://localhost:3000/user/${username}/ratings`);
       return res.data;
     } catch (err) {
@@ -634,12 +709,18 @@
    */
   async function queryWithFilters(params){
     try{
-      console.log(params);
       offset = 0;
-      const res = await axios.get("http://localhost:3000/anime/advanced", { params })
 
       const qs = new URLSearchParams(params).toString();
-      lastQuery = `http://localhost:3000/anime/advanced?${qs}`;
+      const newQuery = `http://localhost:3000/anime/advanced?${qs}`
+
+      if (lastQuery === newQuery) {
+        console.log("Request ignored: same query as last request");
+        return null;
+      }
+
+      const res = await axios.get("http://localhost:3000/anime/advanced", { params })
+      lastQuery = newQuery;
 
       return res.data;
     } catch (err) {
@@ -659,7 +740,7 @@
       const res = await axios.get(lastQuery);
       return res.data;
     } catch (err) {
-      console.error("Error loading loadTopGlobal anime:", err);
+      console.error("Error queryMore:", err);
     }
   }
 

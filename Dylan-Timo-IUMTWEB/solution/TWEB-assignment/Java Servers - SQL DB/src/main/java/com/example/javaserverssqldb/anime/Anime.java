@@ -54,10 +54,9 @@ public class Anime {
 
     @Column(name = "producers", columnDefinition = "TEXT")
     private String producers;
-/*
-    @Column(name = "total_users")
-    private Integer total_users;
- */
+
+    @Column(name = "rating", columnDefinition = "TEXT")
+    private String rating;
 
     /**
      * Empty constructor
@@ -121,8 +120,7 @@ public class Anime {
 
     public String getProducers(){ return this.producers; }
     public void setProducers(String producers){ this.producers = producers; }
-/*
-    public Integer getTotal_users(){ return this.total_users; }
-    public void setTotal_users(Integer total_users){ this.total_users = total_users; }
- */
+
+    public String getRating(){ return this.rating; }
+    public void setRating(String rating){ this.rating = rating; }
 }

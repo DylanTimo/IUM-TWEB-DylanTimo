@@ -23,19 +23,22 @@ public interface AnimeRepository extends JpaRepository<Anime, Integer> {
             "FROM Anime a " +
             "WHERE a.year = :year " +
             "AND a.score IS NOT NULL " +
-            "ORDER BY a.score DESC")
+            "ORDER BY a.score DESC," +
+            "a.id ASC")
     List<Anime> findTopByYear(@Param("year") Integer year, Pageable pageable);
 
     @Query("SELECT a " +
             "FROM Anime a " +
             "WHERE a.score IS NOT NULL " +
-            "ORDER BY a.score DESC")
+            "ORDER BY a.score DESC, " +
+            "a.id ASC")
     List<Anime> findTopGlobal(Pageable pageable);
 
     @Query("SELECT a " +
             "FROM Anime a " +
             "WHERE a.year IS NOT NULL " +
-            "ORDER BY a.year DESC")
+            "ORDER BY a.year DESC," +
+            "a.id ASC")
     List<Anime> findRecent(Pageable pageable);
 
 
