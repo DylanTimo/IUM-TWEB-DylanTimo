@@ -1,0 +1,74 @@
+<div id="filtersBar">
+
+    <div>
+        <label for="filterStatus">Status</label><select id="filterStatus">
+        <option value="">----</option>
+        <option value="Currently Airing">Currently Airing</option>
+        <option value="Finished Airing">Finished Airing</option>
+        <option value="Not yet aired">Not yet aired</option>
+    </select>
+    </div>
+
+
+    <div id = "orderContainer">
+        <label for="filterOrder">Order By</label><select id="filterOrder">
+        <option value="">----</option>
+        <option value="rank">Rank</option>
+        <option value="favorites">Favorites</option>
+        <option value="score">Score</option>
+        <option value="members">Members</option>
+    </select>
+
+        <button id="btnOrderDirection" class="btnOrderByOrientation">▲</button>
+    </div>
+
+    <div>
+        <label for="filterType">Type</label><select id="filterType">
+        <option value="">----</option>
+        <option value="TV">TV</option>
+        <option value="Movie">Movie</option>
+        <option value="Music">Music</option>
+        <option value="OVA">OVA</option>
+        <option value="ONA">ONA</option>
+        <option value="PV">PV</option>
+        <option value="CM">CM</option>
+        <option value="Special">Special</option>
+        <option value="TV Special">TV Special</option>
+    </select>
+    </div>
+
+    <div>
+        <label for="inputGenre" id = "labelGenre">Genre</label>
+        <input id = "inputGenre" type = "text" placeholder = "Genre">
+    </div>
+
+    <div>
+        <label for="filterSource">Source</label><select id="filterSource">
+        <option value="">----</option>
+        <option value="Original">Original</option>
+        <option value="Game">Game</option>
+        <option value="Manga">Manga</option>
+        <option value="Web manga">Web manga</option>
+        <option value="Book">Book</option>
+        <option value="Picture book">Picture book</option>
+        <option value="Novel">Novel</option>
+        <option value="Visual novel">Visual novel</option>
+        <option value="Light novel">Light novel</option>
+        <option value="Web novel">Web novel</option>
+        <option value="Mixed media">Mixed media</option>
+        <option value="4-koma manga">4-koma manga</option>
+        <option value="Music">Music</option>
+        <option value="Radio">Radio</option>
+        <option value="Card game">Card game</option>
+        <option value="Other">Other</option>
+    </select>
+    </div>
+
+
+    <div>
+        <label for="filterYear">Year</label><input id="filterYear" type="number" placeholder="xxxx" min="1920" max="2026">
+    </div>
+
+    <button id="btnApplyFilters">Apply</button>
+    <button id="btnResetFilters">Reset</button>
+</div>

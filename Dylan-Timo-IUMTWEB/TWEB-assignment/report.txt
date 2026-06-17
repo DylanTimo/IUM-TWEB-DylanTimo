@@ -1,0 +1,82 @@
+CREATE TABLE anime (
+    mal_id INT PRIMARY KEY,
+    title VARCHAR(255),
+	image_url TEXT,
+	type VARCHAR(255),
+	status VARCHAR(255),
+	score FLOAT,
+	scored_by FLOAT,
+	rank FLOAT,
+	popularity INT,
+	members INT,
+	favorites INT,
+    genres TEXT,
+	themes TEXT,
+	source VARCHAR(255),
+	rating VARCHAR(255),
+    episodes INT,
+	year INT,
+	producers TEXT
+);
+
+CREATE TABLE anime_stats
+(
+    mal_id integer NOT NULL,
+    watching integer,
+    completed integer,
+    on_hold integer,
+    dropped integer,
+    plan_to_watch integer,
+    total integer,
+    score_1_votes double precision,
+    score_2_votes double precision,
+    score_3_votes double precision,
+    score_4_votes double precision,
+    score_5_votes double precision,
+    score_6_votes double precision,
+    score_7_votes double precision,
+    score_8_votes double precision,
+    score_9_votes double precision,
+    score_10_votes double precision,
+    PRIMARY KEY (mal_id)
+);
+
+CREATE TABLE anime_recommendation
+(
+    mal_id integer NOT NULL,
+    recommended_anime_id TEXT NOT NULL,
+    PRIMARY KEY (mal_id)
+);
+
+CREATE TABLE anime_characters
+(
+    character_mal_id integer NOT NULL,
+    role character varying(100) NOT NULL,
+    favorites integer,
+    anime_mal_id text,
+    nickname text,
+    character_name text,
+    PRIMARY KEY (character_mal_id, role)
+);
+
+CREATE TABLE actors_details
+(
+    person_mal_id integer NOT NULL,
+    relevant_location text,
+    image_url text,
+    name character varying(255),
+    favorites integer,
+
+    PRIMARY KEY (person_mal_id)
+);
+
+CREATE TABLE actors_voice_works(
+id BIGSERIAL PRIMARY KEY,
+person_mal_id integer,
+role TEXT,
+anime_mal_id integer,
+character_mal_id integer,
+language TEXT
+);
+
+--command " "\\copy public.actors_voice_works(person_mal_id, role, animeid, characterid, language) FROM 'C:/Users/dylan/Desktop/HCI-PR~1/HCI-AS~1/solution/data/cleaned/ACTORS~3.CSV' WITH(FORMAT csv, DELIMITER ',', HEADER, QUOTE '\"', ESCAPE '''');""
