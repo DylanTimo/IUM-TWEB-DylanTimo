@@ -355,6 +355,10 @@
    */
   async function loadPersonalHome(username){
     try{
+      // Showing the personal catalog container.
+      const catalogContainer = document.querySelector("#personalCatalogContainer");
+      catalogContainer.classList.remove("hidden");
+
       // Querying ratings of the user logged in, slicing 10 of them to render them in the catalog.
       const res = await queryRatingsByUser(username);
       if(!res) return;
@@ -370,12 +374,10 @@
       renderCatalog(animeList, catalog);
       renderRatings(res, catalog);
 
-      // Showing the personal catalog container.
-      const catalogContainer = document.querySelector("#personalCatalogContainer");
-      catalogContainer.classList.remove("hidden");
-
     } catch (err) {
       console.error("Errore in loadPersonalHome:", err);
+      const catalogContainer = document.querySelector("#personalCatalog");
+      catalogContainer.value = "Error in loading personal home";
     }
   }
 

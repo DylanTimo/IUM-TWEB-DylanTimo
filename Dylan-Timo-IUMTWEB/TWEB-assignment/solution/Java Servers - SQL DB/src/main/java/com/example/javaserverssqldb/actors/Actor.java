@@ -26,6 +26,9 @@ public class Actor {
     @Column(name = "favorites")
     private Integer favorites;
 
+    @Column(name = "alt_names")
+    private String alt_names;
+
     @OneToMany(mappedBy = "actor")
     private List<Works> works;
 
@@ -55,5 +58,7 @@ public class Actor {
     public Integer getFavorites(){ return this.favorites; }
     public void setFavorites(Integer favorites){ this.favorites = favorites; }
 
+    public String getAlt_names(){ return this.alt_names; }
+    public void setAlt_names(String alt_names){ this.alt_names = alt_names; }
 
 }
