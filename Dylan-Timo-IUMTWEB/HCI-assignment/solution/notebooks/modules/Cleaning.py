@@ -51,8 +51,8 @@ def clean_stats(dfStats):
     cols = ["score_1_votes", "score_2_votes", "score_3_votes", "score_4_votes", "score_5_votes", "score_6_votes",
             "score_7_votes", "score_8_votes", "score_9_votes", "score_10_votes"]
 
-    dfStats[cols] = dfStats[cols].fillna(0)
-    dfStats[cols] = dfStats[cols].astype(int)
+    #dfStats[cols] = dfStats[cols].fillna(0)
+    dfStats[cols] = dfStats[cols].astype("Int64")
     return dfStats
 
 def clean_recs(dfRecs):
@@ -156,13 +156,12 @@ def clean_characters(dfCharacters):
         .fillna(0)
         .astype(int)
     )
-    dfCharacters = dfCharacters[dfCharacters["character_mal_id"] != 0]
     dfCharacters["character_mal_id"] = (
         pd.to_numeric(dfCharacters["character_mal_id"], errors="coerce")
         .fillna(-1)
         .astype(int)
     )
-    dfCharacters = dfCharacters[dfCharacters["character_mal_id"] != -1]
+    dfCharacters = dfCharacters[dfCharacters["character_mal_id"] > 0]
 
     return dfCharacters
 
